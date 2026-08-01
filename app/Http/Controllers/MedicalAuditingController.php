@@ -112,6 +112,7 @@ class MedicalAuditingController extends Controller
     public function audit(Request $request, FormSubmission $submission)
     {
         $this->authorizeSubmission($submission);
+        $this->ensureNotViewer();
 
         $validated = $request->validate([
             'status' => 'required|in:approved,rejected',
@@ -140,6 +141,7 @@ class MedicalAuditingController extends Controller
     public function updateNotes(Request $request, FormSubmission $submission)
     {
         $this->authorizeSubmission($submission);
+        $this->ensureNotViewer();
 
         $validated = $request->validate([
             'notes' => 'nullable|string|max:2000',
@@ -286,7 +288,7 @@ class MedicalAuditingController extends Controller
 
     private function ensureAuditor($user): void
     {
-        if (!$user || (!$user->isAdmin() && !$user->isReviewer())) {
+        if (!$user || !$user->canViewAuditing()) {
             abort(403, 'You are not authorized to access this page');
         }
     }
@@ -298,6 +300,13 @@ class MedicalAuditingController extends Controller
 
         if (!$user->isAdmin() && !$user->assignedForms()->whereKey($submission->form_id)->exists()) {
             abort(403, 'This submission is not assigned to you');
+        }
+    }
+
+    private function ensureNotViewer(): void
+    {
+        if (Auth::user()->isViewer()) {
+            abort(403, 'Viewers can only view submissions and cannot perform actions.');
         }
     }
 }

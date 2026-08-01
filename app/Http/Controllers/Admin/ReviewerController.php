@@ -11,7 +11,7 @@ class ReviewerController extends Controller
 {
     public function index()
     {
-        $reviewers = User::where('role', 'reviewer')->latest()->get();
+        $reviewers = User::whereIn('role', ['reviewer', 'viewer'])->latest()->get();
         return view('admin.reviewers.index', compact('reviewers'));
     }
 
@@ -26,36 +26,41 @@ class ReviewerController extends Controller
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username',
             'password' => 'required|string|min:6',
+            'role' => 'required|in:reviewer,viewer',
             'can_view_all_transactions' => 'boolean',
         ]);
+
+        $role = $request->input('role', 'reviewer');
+        $emailDomain = $role === 'viewer' ? 'viewer.local' : 'reviewer.local';
 
         User::create([
             'name' => $request->name,
             'username' => $request->username,
-            'email' => $request->username . '@reviewer.local',
+            'email' => $request->username . '@' . $emailDomain,
             'password' => Hash::make($request->password),
-            'role' => 'reviewer',
-            'can_view_transactions' => true, // Reviewers always see transactions
-            'can_view_all_transactions' => $request->has('can_view_all_transactions'),
+            'role' => $role,
+            'can_view_transactions' => true,
+            'can_view_all_transactions' => $role === 'viewer' ? false : $request->has('can_view_all_transactions'),
         ]);
 
-        return redirect()->route('admin.reviewers.index')->with('success', 'تم إنشاء حساب المراجع بنجاح');
+        $message = $role === 'viewer' ? 'تم إنشاء حساب الاطلاع بنجاح' : 'تم إنشاء حساب المراجع بنجاح';
+        return redirect()->route('admin.reviewers.index')->with('success', $message);
     }
 
     public function edit($id)
     {
-        $reviewer = User::where('role', 'reviewer')->findOrFail($id);
+        $reviewer = User::whereIn('role', ['reviewer', 'viewer'])->findOrFail($id);
         return view('admin.reviewers.edit', compact('reviewer'));
     }
 
     public function update(Request $request, $id)
     {
-        $reviewer = User::where('role', 'reviewer')->findOrFail($id);
+        $reviewer = User::whereIn('role', ['reviewer', 'viewer'])->findOrFail($id);
 
         $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $id,
-            'password' => 'nullable|string|min:8|confirmed',
+            'password' => 'nullable|string|min:6|confirmed',
             'can_view_all_transactions' => 'boolean',
         ]);
 
@@ -66,16 +71,18 @@ class ReviewerController extends Controller
             $reviewer->password = Hash::make($request->password);
         }
 
-        $reviewer->can_view_all_transactions = $request->has('can_view_all_transactions');
+        $reviewer->can_view_all_transactions = $reviewer->role === 'viewer' ? false : $request->has('can_view_all_transactions');
         $reviewer->save();
 
-        return redirect()->route('admin.reviewers.index')->with('success', 'تم تحديث بيانات المراجع بنجاح');
+        $message = $reviewer->role === 'viewer' ? 'تم تحديث بيانات حساب الاطلاع بنجاح' : 'تم تحديث بيانات المراجع بنجاح';
+        return redirect()->route('admin.reviewers.index')->with('success', $message);
     }
 
     public function destroy($id)
     {
-        $reviewer = User::where('role', 'reviewer')->findOrFail($id);
+        $reviewer = User::whereIn('role', ['reviewer', 'viewer'])->findOrFail($id);
         $reviewer->delete();
-        return redirect()->route('admin.reviewers.index')->with('success', 'تم حذف حساب المراجع بنجاح');
+        $message = $reviewer->role === 'viewer' ? 'تم حذف حساب الاطلاع بنجاح' : 'تم حذف حساب المراجع بنجاح';
+        return redirect()->route('admin.reviewers.index')->with('success', $message);
     }
 }

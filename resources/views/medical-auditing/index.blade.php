@@ -107,7 +107,7 @@
                                             <span id="approve-check-{{ $submission->id }}" class="text-green-600" title="Approved">
                                                 <i class="fas fa-check-circle text-xl"></i>
                                             </span>
-                                        @elseif($isPending)
+                                        @elseif($isPending && !auth()->user()->isViewer())
                                             <button type="button" id="approve-btn-{{ $submission->id }}" onclick="openApprove({{ $submission->id }})" title="Approve" class="w-9 h-9 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-600 flex items-center justify-center transition-colors mx-auto">
                                                 <i class="fas fa-check text-sm"></i>
                                             </button>
@@ -121,7 +121,7 @@
                                             <span class="text-red-600" title="Rejected">
                                                 <i class="fas fa-times-circle text-xl"></i>
                                             </span>
-                                        @elseif($isPending)
+                                        @elseif($isPending && !auth()->user()->isViewer())
                                             <button type="button" id="reject-btn-{{ $submission->id }}" onclick="openReject({{ $submission->id }})" title="Reject" class="w-9 h-9 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 flex items-center justify-center transition-colors mx-auto">
                                                 <i class="fas fa-times text-sm"></i>
                                             </button>
@@ -149,11 +149,15 @@
                                     </td>
                                     {{-- Notes Column --}}
                                     <td class="px-5 py-4 text-left max-w-xs">
-                                        <textarea rows="2" maxlength="2000"
-                                            class="w-full text-xs text-slate-600 border border-slate-200 rounded-lg p-2 resize-y focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition"
-                                            placeholder="Write a note..."
-                                            onblur="saveNotes({{ $submission->id }}, this.value)"
-                                        >{{ $submission->review_notes }}</textarea>
+                                        @if(auth()->user()->isViewer())
+                                            <p class="text-xs text-slate-500 whitespace-pre-wrap break-words">{{ $submission->review_notes ?: '—' }}</p>
+                                        @else
+                                            <textarea rows="2" maxlength="2000"
+                                                class="w-full text-xs text-slate-600 border border-slate-200 rounded-lg p-2 resize-y focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition"
+                                                placeholder="Write a note..."
+                                                onblur="saveNotes({{ $submission->id }}, this.value)"
+                                            >{{ $submission->review_notes }}</textarea>
+                                        @endif
                                     </td>
                                 </tr>
                             @empty
@@ -229,10 +233,14 @@
                     <div id="fieldsContainer" class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[55vh] overflow-y-auto"></div>
                     <div class="p-6 bg-slate-50 border-t border-slate-100">
                         <div id="modalError" class="hidden text-red-600 text-sm font-bold mb-2"></div>
-                        <div class="flex flex-col-reverse sm:flex-row gap-3">
-                            <button type="button" onclick="submitDecision('rejected')" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-bold transition">Reject</button>
-                            <button type="button" onclick="submitDecision('approved')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold transition">Approve</button>
-                        </div>
+                        @if(auth()->user()->isViewer())
+                            <p class="text-center text-sm text-slate-400 font-bold">You have view-only access to this submission.</p>
+                        @else
+                            <div class="flex flex-col-reverse sm:flex-row gap-3">
+                                <button type="button" onclick="submitDecision('rejected')" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-bold transition">Reject</button>
+                                <button type="button" onclick="submitDecision('approved')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold transition">Approve</button>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

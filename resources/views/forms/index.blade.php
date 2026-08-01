@@ -61,7 +61,7 @@
                                 <a href="{{ route('forms.share', $form) }}" class="flex-1 bg-blue-50 text-blue-600 py-2.5 rounded-lg text-sm font-bold hover:bg-blue-600 hover:text-white transition text-center">
                                     <i class="fas fa-share-alt ml-1"></i> Share
                                 </a>
-                                <a href="{{ route('submissions.index', $form) }}" class="flex-1 bg-emerald-50 text-emerald-600 py-2.5 rounded-lg text-sm font-bold hover:bg-emerald-600 hover:text-white transition text-center">
+                                <a href="{{ route('medical-auditing.index', ['form_id' => $form->id]) }}" class="flex-1 bg-emerald-50 text-emerald-600 py-2.5 rounded-lg text-sm font-bold hover:bg-emerald-600 hover:text-white transition text-center">
                                     <i class="fas fa-chart-bar ml-1"></i> Submissions
                                 </a>
                             </div>

@@ -10,8 +10,10 @@ class RedirectReviewersToAuditing
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user()?->isReviewer()) {
-            abort(403, 'غير مصرح لك بالوصول إلى لوحة الإدارة.');
+        $user = $request->user();
+
+        if ($user && ($user->isReviewer() || $user->isViewer())) {
+            return redirect()->route('medical-auditing.index');
         }
 
         return $next($request);

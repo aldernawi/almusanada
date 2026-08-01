@@ -99,7 +99,7 @@
         <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md">
             <div class="bg-white rounded-2xl shadow-2xl p-6">
                 <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-lg font-bold text-slate-800">Assign Reviewers</h3>
+                    <h3 class="text-lg font-bold text-slate-800">Assign Reviewers & Viewers</h3>
                     <button onclick="closeAssignModal()" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-700 transition flex items-center justify-center">
                         <i class="fas fa-times text-xl"></i>
                     </button>
@@ -109,6 +109,9 @@
                 <form id="assignForm" method="POST" action="">
                     @csrf
                     <div class="space-y-2 max-h-64 overflow-y-auto">
+                        @if($reviewers->count() > 0)
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider px-1 mb-1">Reviewers</p>
+                        @endif
                         @foreach($reviewers as $reviewer)
                             <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl hover:bg-blue-50 cursor-pointer transition border-2 border-transparent has-[:checked]:border-blue-300 has-[:checked]:bg-blue-50">
                                 <input type="checkbox" name="reviewer_ids[]" value="{{ $reviewer->id }}" class="reviewer-checkbox w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
@@ -121,12 +124,28 @@
                                 </div>
                             </label>
                         @endforeach
+
+                        @if($viewers->count() > 0)
+                            <p class="text-xs font-bold text-indigo-400 uppercase tracking-wider px-1 mb-1 mt-3">Viewers <span class="text-indigo-300 normal-case font-normal">(view only)</span></p>
+                        @endif
+                        @foreach($viewers as $viewer)
+                            <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl hover:bg-indigo-50 cursor-pointer transition border-2 border-transparent has-[:checked]:border-indigo-300 has-[:checked]:bg-indigo-50">
+                                <input type="checkbox" name="viewer_ids[]" value="{{ $viewer->id }}" class="reviewer-checkbox w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500">
+                                <div class="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                                    {{ mb_substr($viewer->name, 0, 1) }}
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold text-slate-800">{{ $viewer->name }}</p>
+                                    <p class="text-xs text-slate-400">{{ $viewer->email }}</p>
+                                </div>
+                            </label>
+                        @endforeach
                     </div>
 
-                    @if($reviewers->count() === 0)
+                    @if($reviewers->count() === 0 && $viewers->count() === 0)
                         <div class="text-center py-8">
                             <i class="fas fa-users-slash text-3xl text-slate-200 mb-2"></i>
-                            <p class="text-slate-500 text-sm">No reviewers found. Create users with the reviewer role first.</p>
+                            <p class="text-slate-500 text-sm">No reviewers or viewers found. Create users with the reviewer or viewer role first.</p>
                         </div>
                     @endif
 

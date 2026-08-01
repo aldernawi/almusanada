@@ -61,8 +61,11 @@
                 <a href="{{ route('forms.edit', $form) }}" class="flex-1 bg-slate-100 text-slate-600 hover:bg-slate-900 hover:text-white py-2 rounded-lg text-[11px] font-bold transition flex items-center justify-center gap-1">
                     <i class="fas fa-edit"></i> Edit
                 </a>
-                <a href="{{ route('submissions.index', $form) }}" class="flex-1 bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white py-2 rounded-lg text-[11px] font-bold transition flex items-center justify-center gap-1">
-                    <i class="fas fa-database"></i> Data
+                <a href="{{ route('medical-auditing.index', ['form_id' => $form->id]) }}" class="flex-1 bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white py-2 rounded-lg text-[11px] font-bold transition flex items-center justify-center gap-1">
+                    <i class="fas fa-database"></i> Responses
+                </a>
+                <a href="{{ route('medical-auditing.index', ['form_id' => $form->id]) }}" class="flex-1 bg-amber-50 text-amber-600 hover:bg-amber-600 hover:text-white py-2 rounded-lg text-[11px] font-bold transition flex items-center justify-center gap-1">
+                    <i class="fas fa-clipboard-check"></i> Review
                 </a>
                 <a href="{{ route('forms.share', $form) }}" class="flex-1 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white py-2 rounded-lg text-[11px] font-bold transition flex items-center justify-center gap-1">
                     <i class="fas fa-share-alt"></i> Share

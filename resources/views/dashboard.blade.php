@@ -110,12 +110,12 @@
                 <!-- Main Workspace (Central Zone) -->
                 <div class="flex-1">
                     <!-- Role-Specific Quick Actions -->
-                    @if(auth()->user()->canReview())
+                    @if(auth()->user()->canViewAuditing())
                     <div class="bg-slate-900 rounded-2xl p-5 shadow-lg mb-6 text-white">
                         <div class="flex items-center justify-between">
                             <div>
                                 <h3 class="font-bold text-lg mb-1">Medical Claims Audit</h3>
-                                <p class="text-slate-300 text-sm">Review pending claims and make audit decisions</p>
+                                <p class="text-slate-300 text-sm">{{ auth()->user()->isViewer() ? 'View submissions and audit status' : 'Review pending claims and make audit decisions' }}</p>
                             </div>
                             <a href="{{ route('medical-auditing.index') }}" class="bg-white text-slate-900 font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-blue-50 transition-colors flex items-center gap-2">
                                 <span>Go to dashboard</span>
@@ -203,9 +203,9 @@
                                             @endif
                                         </td>
                                         <td class="py-2.5 px-3 text-left">
-                                            @if(auth()->user()->canReview())
-                                                <a href="{{ route('medical-auditing.index') }}" class="text-blue-600 hover:text-blue-700 text-xs font-bold">
-                                                    Review
+                                            @if(auth()->user()->canViewAuditing())
+                                                <a href="{{ route('medical-auditing.index', ['form_id' => $sub->form->id]) }}" class="text-blue-600 hover:text-blue-700 text-xs font-bold">
+                                                    {{ auth()->user()->isViewer() ? 'View' : 'Review' }}
                                                 </a>
                                             @else
                                                 <a href="{{ route('submissions.index', $sub->form) }}" class="text-slate-500 hover:text-slate-700 text-xs font-bold">

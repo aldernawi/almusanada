@@ -89,9 +89,19 @@ class User extends Authenticatable
         return $this->role === 'reviewer';
     }
 
+    public function isViewer(): bool
+    {
+        return $this->role === 'viewer';
+    }
+
     public function canReview(): bool
     {
         return $this->isAdmin() || $this->isReviewer();
+    }
+
+    public function canViewAuditing(): bool
+    {
+        return $this->canReview() || $this->isViewer();
     }
 
     public function company(): BelongsTo

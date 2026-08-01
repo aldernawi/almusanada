@@ -19,8 +19,9 @@ class ReviewerController extends Controller
 
         $forms = Form::with(['reviewers', 'fields'])->withCount('submissions')->get();
         $reviewers = User::where('role', 'reviewer')->get();
+        $viewers = User::where('role', 'viewer')->get();
 
-        return view('reviewer.assignment', compact('forms', 'reviewers'));
+        return view('reviewer.assignment', compact('forms', 'reviewers', 'viewers'));
     }
 
     public function assignReviewers(Request $request, Form $form)
@@ -32,9 +33,13 @@ class ReviewerController extends Controller
         $validated = $request->validate([
             'reviewer_ids' => 'array',
             'reviewer_ids.*' => [Rule::exists('users', 'id')->where('role', 'reviewer')],
+            'viewer_ids' => 'array',
+            'viewer_ids.*' => [Rule::exists('users', 'id')->where('role', 'viewer')],
         ]);
 
-        $form->reviewers()->sync($validated['reviewer_ids'] ?? []);
+        $reviewerIds = $validated['reviewer_ids'] ?? [];
+        $viewerIds = $validated['viewer_ids'] ?? [];
+        $form->reviewers()->sync(array_merge($reviewerIds, $viewerIds));
 
         if ($request->wantsJson()) {
             return response()->json([

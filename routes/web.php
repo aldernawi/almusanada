@@ -93,6 +93,7 @@ Route::middleware(['auth', 'admin'])->prefix('secure-admin')->name('admin.')->gr
     Route::get('/reviewers/{id}/edit', [AdminReviewerController::class, 'edit'])->name('reviewers.edit');
     Route::put('/reviewers/{id}', [AdminReviewerController::class, 'update'])->name('reviewers.update');
     Route::delete('/reviewers/{id}', [AdminReviewerController::class, 'destroy'])->name('reviewers.destroy');
+
 });
 
 // Customer Portal Auth Routes

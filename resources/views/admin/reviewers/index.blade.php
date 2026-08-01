@@ -6,8 +6,8 @@
     <div class="container mx-auto px-4 py-8 max-w-5xl">
         <div class="flex justify-between items-center mb-8">
             <div>
-                <h1 class="text-3xl font-bold text-gray-800">إدارة المراجعين الداخليين</h1>
-                <p class="text-gray-600 mt-2">إنشاء وإدارة حسابات المراجعين الداخليين</p>
+                <h1 class="text-3xl font-bold text-gray-800">إدارة المراجعين وحسابات الاطلاع</h1>
+                <p class="text-gray-600 mt-2">إنشاء وإدارة حسابات المراجعين وحسابات الاطلاع (عرض فقط)</p>
             </div>
             <a href="{{ route('admin.reviewers.create') }}"
                 class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg transition flex items-center gap-2">
@@ -15,7 +15,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
                 </svg>
-                إضافة مراجع جديد
+                إضافة مستخدم جديد
             </a>
         </div>
 
@@ -36,6 +36,7 @@
                     <tr class="bg-gray-50 border-b">
                         <th class="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase">الاسم</th>
                         <th class="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase">اسم المستخدم</th>
+                        <th class="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase">الدور</th>
                         <th class="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase">الصلاحيات</th>
                         <th class="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase">تاريخ الإنشاء</th>
                         <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase">الإجراءات</th>
@@ -46,8 +47,17 @@
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-6 py-4 text-gray-900 font-medium">{{ $reviewer->name }}</td>
                             <td class="px-6 py-4 text-blue-600 font-bold">{{ $reviewer->username }}</td>
+                            <td class="px-6 py-4">
+                                @if($reviewer->role === 'viewer')
+                                    <span class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded text-xs">اطلاع</span>
+                                @else
+                                    <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">مراجع</span>
+                                @endif
+                            </td>
                             <td class="px-6 py-4 text-gray-600">
-                                @if($reviewer->can_view_all_transactions)
+                                @if($reviewer->role === 'viewer')
+                                    <span class="bg-gray-100 text-gray-500 px-2 py-1 rounded text-xs">عرض فقط</span>
+                                @elseif($reviewer->can_view_all_transactions)
                                     <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">جميع المعاملات</span>
                                 @else
                                     <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs">محدودة</span>
@@ -85,7 +95,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-12 text-center text-gray-500">لا توجد حسابات مراجعين حالياً</td>
+                            <td colspan="6" class="px-6 py-12 text-center text-gray-500">لا توجد حسابات حالياً</td>
                         </tr>
                     @endforelse
                 </tbody>

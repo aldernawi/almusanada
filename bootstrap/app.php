@@ -45,6 +45,9 @@ return Application::configure(basePath: dirname(__DIR__))
                 if ($request->user() && $request->user()->role === 'reviewer') {
                     return route('medical-auditing.index');
                 }
+                if ($request->user() && $request->user()->role === 'viewer') {
+                    return route('medical-auditing.index');
+                }
                 return route('dashboard');
             }
         );

@@ -1,6 +1,6 @@
 @extends('layouts.website-app')
 
-@section('page_title', 'تعديل المراجع')
+@section('page_title', 'تعديل المستخدم')
 
 @section('content')
     <div class="container mx-auto px-4 py-8 max-w-2xl">
@@ -10,11 +10,15 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                 </svg>
-                العودة لقائمة المراجعين
+                العودة لقائمة المستخدمين
             </a>
             
-            <h1 class="text-3xl font-bold text-gray-800">تعديل بيانات المراجع</h1>
-            <p class="text-gray-600 mt-2">تعديل معلومات حساب المراجع</p>
+            <h1 class="text-3xl font-bold text-gray-800">تعديل بيانات {{ $reviewer->role === 'viewer' ? 'حساب الاطلاع' : 'المراجع' }}</h1>
+            <p class="text-gray-600 mt-2">تعديل معلومات الحساب</p>
+
+            <div class="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg {{ $reviewer->role === 'viewer' ? 'bg-indigo-100 text-indigo-700' : 'bg-green-100 text-green-700' }}">
+                <span class="text-sm font-bold">{{ $reviewer->role === 'viewer' ? 'دور: اطلاع (عرض فقط)' : 'دور: مراجع' }}</span>
+            </div>
         </div>
 
         @if ($errors->any())
@@ -51,7 +55,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
-                                    اسم المراجع <span class="text-red-500">*</span>
+                                    الاسم <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text" id="name" name="name" value="{{ old('name', $reviewer->name) }}"
                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition outline-none"
@@ -70,6 +74,7 @@
                     </div>
 
                     <!-- Permissions -->
+                    @if($reviewer->role !== 'viewer')
                     <div>
                         <h3 class="text-lg font-semibold text-gray-800 mb-4">الصلاحيات</h3>
                         <div class="bg-blue-50 p-4 rounded-lg">
@@ -82,6 +87,14 @@
                             <p class="text-gray-500 text-xs mt-2 ml-6">إذا لم يتم تحديده، سيرى المراجع معاملاته فقط</p>
                         </div>
                     </div>
+                    @else
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">الصلاحيات</h3>
+                        <div class="bg-indigo-50 p-4 rounded-lg">
+                            <p class="text-sm text-indigo-700">هذا حساب اطلاع - يمكن للمستخدم عرض النماذج المخصصة له فقط دون أي إجراءات.</p>
+                        </div>
+                    </div>
+                    @endif
 
                     <!-- Password -->
                     <div>
