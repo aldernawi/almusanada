@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم - تسجيل الدخول | الشركة المساندة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>Dashboard - Login | Almusanada</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Inter', sans-serif;
             min-height: 100vh;
             background: linear-gradient(135deg, #080c14 0%, #0f172a 50%, #1e293b 100%);
             display: flex; align-items: center; justify-content: center;
@@ -83,19 +83,19 @@
         .form-group { margin-bottom: 1.25rem; position: relative; }
         .form-label { display: block; font-size: 0.825rem; font-weight: 700; color: #334155; margin-bottom: 0.5rem; }
         .input-wrap { position: relative; }
-        .input-icon { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #cbd5e1; font-size: 0.95rem; transition: all 0.25s; pointer-events: none; z-index: 1; }
+        .input-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #cbd5e1; font-size: 0.95rem; transition: all 0.25s; pointer-events: none; z-index: 1; }
 
         .form-input {
-            width: 100%; padding: 0.9rem 2.75rem 0.9rem 1.125rem;
+            width: 100%; padding: 0.9rem 1.125rem 0.9rem 2.75rem;
             border: 1.5px solid #e2e8f0; border-radius: 14px;
-            font-family: 'Cairo', sans-serif; font-size: 0.95rem; color: #1e293b;
+            font-family: 'Inter', sans-serif; font-size: 0.95rem; color: #1e293b;
             background: #f8fafc; outline: none; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .form-input:focus { border-color: #2563eb; background: white; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1), 0 4px 16px rgba(37, 99, 235, 0.12); transform: translateY(-1px); }
         .form-input:focus + .input-icon { color: #2563eb; transform: translateY(-50%) scale(1.1); }
         .form-input::placeholder { color: #cbd5e1; }
 
-        .pwd-toggle { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #cbd5e1; cursor: pointer; font-size: 0.95rem; transition: color 0.2s; z-index: 1; background: none; border: none; padding: 0; }
+        .pwd-toggle { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #cbd5e1; cursor: pointer; font-size: 0.95rem; transition: color 0.2s; z-index: 1; background: none; border: none; padding: 0; }
         .pwd-toggle:hover { color: #64748b; }
 
         .remember-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; }
@@ -105,7 +105,7 @@
         .btn-login {
             width: 100%; padding: 1rem; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
             color: white; border: none; border-radius: 14px;
-            font-family: 'Cairo', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer;
+            font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer;
             transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); margin-top: 0.25rem;
             box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
             display: flex; align-items: center; justify-content: center; gap: 0.5rem; position: relative; overflow: hidden;
@@ -115,12 +115,12 @@
         .btn-login:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(37, 99, 235, 0.4); }
         .btn-login:hover::before { left: 130%; }
         .btn-login:active { transform: translateY(-1px); }
-        .btn-login:hover i { transform: translateX(-4px); }
+        .btn-login:hover i { transform: translateX(4px); }
 
         .back-link { display: flex; align-items: center; justify-content: center; gap: 0.4rem; margin-top: 1.75rem; color: rgba(255, 255, 255, 0.45); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: all 0.25s; }
         .back-link:hover { color: rgba(255, 255, 255, 0.9); gap: 0.6rem; }
         .back-link svg { width: 14px; height: 14px; transition: transform 0.25s; }
-        .back-link:hover svg { transform: translateX(-3px); }
+        .back-link:hover svg { transform: translateX(3px); }
 
         .secure-badge { display: flex; align-items: center; justify-content: center; gap: 0.4rem; margin-top: 1.25rem; font-size: 0.75rem; color: #94a3b8; font-weight: 600; }
         .secure-badge i { color: #2563eb; font-size: 0.7rem; }
@@ -137,15 +137,15 @@
     <div class="login-wrapper">
         <div class="login-brand">
             <div class="logo-wrap">
-                <img src="{{ asset('images/logo.png') }}" alt="الشركة المساندة للتأمين" style="max-width: 320px; height: auto; filter: brightness(0) invert(1);">
+                <img src="{{ asset('images/logo.png') }}" alt="Almusanada Insurance" style="max-width: 320px; height: auto; filter: brightness(0) invert(1);">
             </div>
-            <h1>لوحة التحكم</h1>
-            <p>منصة إدارة الشركة المساندة</p>
+            <h1>Dashboard</h1>
+            <p>Almusanada Management Platform</p>
         </div>
 
         <div class="login-card">
-            <div class="card-title">تسجيل الدخول</div>
-            <div class="card-subtitle">أدخل بياناتك للوصول إلى لوحة الإدارة</div>
+            <div class="card-title">Login</div>
+            <div class="card-subtitle">Enter your credentials to access the admin panel</div>
 
             @if ($errors->any())
                 <div class="error-box">
@@ -160,18 +160,18 @@
             <form action="{{ route('admin.login.post') }}" method="POST">
                 @csrf
                 <div class="form-group">
-                    <label for="username" class="form-label">اسم المستخدم</label>
+                    <label for="username" class="form-label">Username</label>
                     <div class="input-wrap">
                         <input type="text" id="username" name="username"
                             value="{{ old('username') }}"
                             class="form-input"
-                            placeholder="أدخل اسم المستخدم"
+                            placeholder="Enter your username"
                             required autofocus>
                         <i class="fas fa-user input-icon"></i>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="password" class="form-label">كلمة المرور</label>
+                    <label for="password" class="form-label">Password</label>
                     <div class="input-wrap">
                         <input type="password" id="password" name="password"
                             class="form-input"
@@ -185,15 +185,15 @@
                 </div>
                 <div class="remember-row">
                     <input type="checkbox" id="remember" name="remember">
-                    <label for="remember">تذكرني</label>
+                    <label for="remember">Remember me</label>
                 </div>
                 <button type="submit" class="btn-login">
                     <i class="fas fa-sign-in-alt"></i>
-                    <span>تسجيل الدخول</span>
+                    <span>Login</span>
                 </button>
                 <div class="secure-badge">
                     <i class="fas fa-shield-alt"></i>
-                    <span>اتصال آمن ومشفّر</span>
+                    <span>Secure encrypted connection</span>
                 </div>
             </form>
         </div>
@@ -202,7 +202,7 @@
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
-            العودة إلى الصفحة الرئيسية
+            Back to homepage
         </a>
     </div>
 

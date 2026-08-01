@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بوابة الاستعلام - الشركة المساندة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>Inquiry Portal - Almusanada</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #080c14 0%, #0f172a 50%, #1e293b 100%);
             min-height: 100vh;
             color: #333;
@@ -71,7 +71,7 @@
             padding: 0.4rem 1.25rem;
             border-radius: 10px;
             cursor: pointer;
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-weight: 600;
             font-size: 0.85rem;
             transition: all 0.3s;
@@ -146,13 +146,13 @@
             padding: 0.9rem 1.25rem;
             border: 1.5px solid #e2e8f0;
             border-radius: 14px;
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: 1rem;
             outline: none;
             background: #f8fafc;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             direction: ltr;
-            text-align: right;
+            text-align: left;
         }
         .search-input:focus {
             border-color: #2563eb;
@@ -160,7 +160,7 @@
             box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
             transform: translateY(-1px);
         }
-        .search-input::placeholder { color: #cbd5e1; direction: rtl; }
+        .search-input::placeholder { color: #cbd5e1; direction: ltr; }
 
         .btn-search {
             background: linear-gradient(135deg, #1e293b, #080c14);
@@ -169,7 +169,7 @@
             padding: 0.9rem 2rem;
             border-radius: 14px;
             cursor: pointer;
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-weight: 700;
             font-size: 0.95rem;
             display: flex;
@@ -277,7 +277,7 @@
     @yield('content')
 
     <div class="portal-footer">
-        &copy; {{ date('Y') }} الشركة المساندة - بوابة الاستعلام
+        &copy; {{ date('Y') }} Almusanada - Inquiry Portal
     </div>
 </body>
 

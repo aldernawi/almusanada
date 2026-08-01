@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="rtl">
+<html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Almusanada') }} - منصة المساندة الطبية</title>
+        <title>{{ config('app.name', 'Almusanada') }} - Medical Claims Platform</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
         <!-- Scripts -->
@@ -41,7 +41,7 @@
         
         <style>
             body {
-                font-family: 'Tajawal', sans-serif;
+                font-family: 'Inter', sans-serif;
             }
             [x-cloak] { display: none !important; }
             @keyframes fadeIn {
@@ -68,40 +68,40 @@
                             <i class="fas fa-heartbeat text-2xl text-white"></i>
                         </div>
                         <div>
-                            <div class="text-xl font-extrabold">المُساندة</div>
-                            <div class="text-xs text-white/60">منصة إدارة المطالبات الطبية</div>
+                            <div class="text-xl font-extrabold">Almusanada</div>
+                            <div class="text-xs text-white/60">Medical Claims Management Platform</div>
                         </div>
                     </div>
 
                     <!-- Hero Text -->
                     <div class="space-y-6">
                         <h1 class="text-4xl font-extrabold leading-tight">
-                            نظام متكامل لإدارة<br>
-                            مطالبات التأمين الصحي
+                            Integrated Platform for<br>
+                            Health Insurance Claims
                         </h1>
                         <p class="text-lg text-white/70 leading-relaxed max-w-md">
-                            منصة آمنة وذكية لاستقبال وتدقيق وموافقة المطالبات الطبية من مزودي الخدمة بكفاءة وسرعة.
+                            A secure and intelligent platform for receiving, reviewing, and approving medical claims from healthcare providers efficiently and quickly.
                         </p>
                         <!-- Feature pills -->
                         <div class="flex flex-wrap gap-3 pt-2">
                             <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl text-sm font-semibold">
                                 <i class="fas fa-shield-alt text-green-300"></i>
-                                <span>تشفير كامل للبيانات</span>
+                                <span>Full Data Encryption</span>
                             </div>
                             <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl text-sm font-semibold">
                                 <i class="fas fa-bolt text-yellow-300"></i>
-                                <span>تدقيق فوري</span>
+                                <span>Instant Review</span>
                             </div>
                             <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl text-sm font-semibold">
                                 <i class="fas fa-chart-line text-blue-300"></i>
-                                <span>تقارير لحظية</span>
+                                <span>Real-time Reports</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Footer -->
                     <div class="text-sm text-white/40">
-                        &copy; {{ date('Y') }} المُساندة. جميع الحقوق محفوظة.
+                        &copy; {{ date('Y') }} Almusanada. All rights reserved.
                     </div>
                 </div>
             </div>
@@ -114,8 +114,8 @@
                         <i class="fas fa-heartbeat text-2xl text-white"></i>
                     </div>
                     <div>
-                        <div class="text-xl font-extrabold text-gray-900">المُساندة</div>
-                        <div class="text-xs text-gray-500">منصة إدارة المطالبات الطبية</div>
+                        <div class="text-xl font-extrabold text-gray-900">Almusanada</div>
+                        <div class="text-xs text-gray-500">Medical Claims Management Platform</div>
                     </div>
                 </div>
 

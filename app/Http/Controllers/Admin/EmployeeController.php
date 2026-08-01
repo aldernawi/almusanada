@@ -31,13 +31,13 @@ class EmployeeController extends Controller
 
         Employee::create($request->all());
 
-        return redirect()->route('admin.employees.index')->with('success', 'تم إضافة الموظف بنجاح');
+        return redirect()->route('admin.employees.index')->with('success', 'Employee added successfully.');
     }
 
     public function destroy($id)
     {
         $employee = Employee::findOrFail($id);
         $employee->delete();
-        return redirect()->route('admin.employees.index')->with('success', 'تم حذف الموظف بنجاح');
+        return redirect()->route('admin.employees.index')->with('success', 'Employee deleted successfully.');
     }
 }

@@ -49,23 +49,25 @@
 
             <div id="flashMessage" class="hidden mb-4 p-4 rounded-xl text-sm font-bold"></div>
 
-            {{-- Filters --}}
+            {{-- Search & Filters --}}
             <div class="main-card p-5 mb-6">
-                <form method="GET" action="{{ route('medical-auditing.index') }}" class="grid grid-cols-1 md:grid-cols-5 gap-3">
-                    <input type="number" min="1" name="search" value="{{ request('search') }}" placeholder="Submission ID" class="text-sm border-slate-200 rounded-xl px-4 py-2.5 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition">
-                    <input type="hidden" name="form_id" value="{{ $form->id }}">
-                    <select name="status" class="text-sm border-slate-200 rounded-xl px-4 py-2.5 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition">
+                <div class="flex flex-col md:flex-row gap-3">
+                    <div class="relative flex-1">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input type="text" id="globalSearch" placeholder="Search by ID, status, notes, field values, reviewer..." 
+                            class="w-full text-sm border-slate-200 rounded-xl pl-11 pr-4 py-2.5 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition"
+                            value="{{ request('search') }}">
+                        <input type="hidden" id="searchFormId" value="{{ $form->id }}">
+                    </div>
+                    <select id="searchStatus" class="text-sm border-slate-200 rounded-xl px-4 py-2.5 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition">
                         <option value="">All statuses</option>
                         <option value="pending" @selected(request('status') === 'pending')>Pending</option>
                         <option value="approved" @selected(request('status') === 'approved')>Approved</option>
                         <option value="rejected" @selected(request('status') === 'rejected')>Rejected</option>
                     </select>
-                    <input type="date" name="date_from" value="{{ request('date_from') }}" class="text-sm border-slate-200 rounded-xl px-4 py-2.5 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition">
-                    <div class="flex gap-2">
-                        <button class="flex-1 bg-slate-900 hover:bg-blue-600 text-white rounded-xl text-sm font-bold transition duration-300 hover:shadow-lg hover:shadow-blue-500/20 px-4 py-2.5">Apply</button>
-                        <a href="{{ route('medical-auditing.index', ['form_id' => $form->id]) }}" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-bold transition">Clear</a>
-                    </div>
-                </form>
+                    <input type="date" id="searchDateFrom" value="{{ request('date_from') }}" class="text-sm border-slate-200 rounded-xl px-4 py-2.5 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition">
+                    <input type="date" id="searchDateTo" value="{{ request('date_to') ?? '' }}" class="text-sm border-slate-200 rounded-xl px-4 py-2.5 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition">
+                </div>
             </div>
 
             {{-- Submissions table --}}
@@ -84,91 +86,17 @@
                                 <th class="px-5 py-4 text-left text-xs font-bold text-slate-500">Notes</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-50">
-                            @forelse($submissions as $submission)
-                                @php
-                                    $attachments = $submission->submissionData->filter(fn ($d) => $d->file_data !== null);
-                                    $hasAttachments = $attachments->isNotEmpty();
-                                    $isApproved = $submission->status === 'approved';
-                                    $isRejected = $submission->status === 'rejected';
-                                    $isPending = $submission->status === 'pending';
-                                @endphp
-                                <tr id="submission-row-{{ $submission->id }}" class="hover:bg-slate-50/50 transition">
-                                    <td class="px-5 py-4 text-sm font-extrabold text-slate-800">#{{ $submission->id }}</td>
-                                    <td class="px-5 py-4 text-sm text-slate-500">{{ $submission->submitted_at?->format('Y-m-d H:i') }}</td>
-                                    <td class="px-5 py-4">
-                                        <span id="status-{{ $submission->id }}" class="inline-flex rounded-lg px-2.5 py-1 text-xs font-bold {{ $isApproved ? 'bg-emerald-100 text-emerald-700' : ($isRejected ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700') }}">
-                                            {{ ['approved' => 'Approved', 'rejected' => 'Rejected', 'pending' => 'Pending'][$submission->status] ?? $submission->status }}
-                                        </span>
-                                    </td>
-                                    {{-- Approve Column --}}
-                                    <td class="px-5 py-4 text-center">
-                                        @if($isApproved)
-                                            <span id="approve-check-{{ $submission->id }}" class="text-green-600" title="Approved">
-                                                <i class="fas fa-check-circle text-xl"></i>
-                                            </span>
-                                        @elseif($isPending && !auth()->user()->isViewer())
-                                            <button type="button" id="approve-btn-{{ $submission->id }}" onclick="openApprove({{ $submission->id }})" title="Approve" class="w-9 h-9 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-600 flex items-center justify-center transition-colors mx-auto">
-                                                <i class="fas fa-check text-sm"></i>
-                                            </button>
-                                        @else
-                                            <span class="text-gray-300"><i class="fas fa-minus text-sm"></i></span>
-                                        @endif
-                                    </td>
-                                    {{-- Reject Column --}}
-                                    <td class="px-5 py-4 text-center">
-                                        @if($isRejected)
-                                            <span class="text-red-600" title="Rejected">
-                                                <i class="fas fa-times-circle text-xl"></i>
-                                            </span>
-                                        @elseif($isPending && !auth()->user()->isViewer())
-                                            <button type="button" id="reject-btn-{{ $submission->id }}" onclick="openReject({{ $submission->id }})" title="Reject" class="w-9 h-9 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 flex items-center justify-center transition-colors mx-auto">
-                                                <i class="fas fa-times text-sm"></i>
-                                            </button>
-                                        @else
-                                            <span class="text-gray-300"><i class="fas fa-minus text-sm"></i></span>
-                                        @endif
-                                    </td>
-                                    {{-- View Details Column --}}
-                                    <td class="px-5 py-4 text-center">
-                                        <button type="button" onclick="openAudit({{ $submission->id }})" title="View details" class="w-9 h-9 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors mx-auto">
-                                            <i class="fas fa-eye text-sm"></i>
-                                        </button>
-                                    </td>
-                                    {{-- Attachments Column --}}
-                                    <td class="px-5 py-4 text-center">
-                                        @if($hasAttachments)
-                                            @foreach($attachments as $attachment)
-                                                <button type="button" onclick="openPdfPopup('{{ route('medical-auditing.attachments.inline', [$submission, $attachment]) }}', '{{ $attachment->file_data['name'] ?? 'Attachment' }}', '{{ route('medical-auditing.attachments.show', [$submission, $attachment]) }}')" title="View attachment: {{ $attachment->file_data['name'] ?? 'Attachment' }}" class="w-9 h-9 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-600 flex items-center justify-center transition-colors mx-auto">
-                                                    <i class="fas fa-paperclip text-sm"></i>
-                                                </button>
-                                            @endforeach
-                                        @else
-                                            <span class="text-gray-300"><i class="fas fa-minus text-sm"></i></span>
-                                        @endif
-                                    </td>
-                                    {{-- Notes Column --}}
-                                    <td class="px-5 py-4 text-left max-w-xs">
-                                        @if(auth()->user()->isViewer())
-                                            <p class="text-xs text-slate-500 whitespace-pre-wrap break-words">{{ $submission->review_notes ?: '—' }}</p>
-                                        @else
-                                            <textarea rows="2" maxlength="2000"
-                                                class="w-full text-xs text-slate-600 border border-slate-200 rounded-lg p-2 resize-y focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition"
-                                                placeholder="Write a note..."
-                                                onblur="saveNotes({{ $submission->id }}, this.value)"
-                                            >{{ $submission->review_notes }}</textarea>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr><td colspan="8" class="px-6 py-16 text-center text-slate-400">No matching submissions.</td></tr>
-                            @endforelse
+                        <tbody id="submissionsBody" class="divide-y divide-slate-50">
+                            @php
+                                $statusLabels = ['approved' => 'Approved', 'rejected' => 'Rejected', 'pending' => 'Pending'];
+                            @endphp
+                            @include('medical-auditing.partials.submissions-table')
                         </tbody>
                     </table>
                 </div>
-                @if($submissions->hasPages())
-                    <div class="px-6 py-4 border-t border-slate-100 bg-slate-50/50">{{ $submissions->links() }}</div>
-                @endif
+                <div id="paginationContainer" class="px-6 py-4 border-t border-slate-100 bg-slate-50/50">
+                    {{ $submissions->links() }}
+                </div>
             </div>
         @else
             {{-- Forms list view --}}
@@ -188,34 +116,67 @@
                     <p class="text-slate-500 font-bold">No forms are assigned to you yet</p>
                 </div>
             @else
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                    @foreach($forms as $form)
-                        <a href="{{ route('medical-auditing.index', ['form_id' => $form->id]) }}" class="main-card p-6 hover:shadow-lg hover:border-blue-200 transition-all duration-300 card-lift group">
-                            <div class="flex items-start justify-between mb-4">
-                                <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
-                                    <i class="fas fa-file-medical text-xl"></i>
-                                </div>
-                                <span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-full font-bold">{{ $form->total_submissions }} submissions</span>
-                            </div>
-                            <h3 class="font-extrabold text-slate-800 text-lg mb-1 group-hover:text-blue-600 transition-colors">{{ $form->title }}</h3>
-                            <p class="text-sm text-slate-400 line-clamp-2 mb-4">{{ $form->description ?? 'No description' }}</p>
-                            <div class="flex items-center gap-2 text-xs font-bold">
-                                @if($form->pending_count > 0)
-                                    <span class="bg-amber-50 text-amber-700 px-2.5 py-1 rounded-lg">{{ $form->pending_count }} Pending</span>
-                                @endif
-                                @if($form->approved_count > 0)
-                                    <span class="bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-lg">{{ $form->approved_count }} Approved</span>
-                                @endif
-                                @if($form->rejected_count > 0)
-                                    <span class="bg-red-50 text-red-700 px-2.5 py-1 rounded-lg">{{ $form->rejected_count }} Rejected</span>
-                                @endif
-                            </div>
-                            <div class="mt-4 flex items-center text-blue-600 text-sm font-bold gap-1.5">
-                                <span>View submissions</span>
-                                <i class="fas fa-arrow-right text-xs"></i>
-                            </div>
-                        </a>
-                    @endforeach
+                <div class="main-card overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-slate-100">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th class="px-5 py-4 text-left text-xs font-bold text-slate-500">Form</th>
+                                    <th class="px-5 py-4 text-left text-xs font-bold text-slate-500">Description</th>
+                                    <th class="px-5 py-4 text-center text-xs font-bold text-slate-500">Total</th>
+                                    <th class="px-5 py-4 text-center text-xs font-bold text-slate-500">Pending</th>
+                                    <th class="px-5 py-4 text-center text-xs font-bold text-slate-500">Approved</th>
+                                    <th class="px-5 py-4 text-center text-xs font-bold text-slate-500">Rejected</th>
+                                    <th class="px-5 py-4 text-center text-xs font-bold text-slate-500">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-50">
+                                @foreach($forms as $form)
+                                    <tr class="hover:bg-slate-50/50 transition">
+                                        <td class="px-5 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0">
+                                                    <i class="fas fa-file-medical"></i>
+                                                </div>
+                                                <a href="{{ route('medical-auditing.index', ['form_id' => $form->id]) }}" class="font-extrabold text-slate-800 hover:text-blue-600 transition-colors">{{ $form->title }}</a>
+                                            </div>
+                                        </td>
+                                        <td class="px-5 py-4 text-sm text-slate-400 max-w-xs truncate">{{ $form->description ?? 'No description' }}</td>
+                                        <td class="px-5 py-4 text-center">
+                                            <span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-full font-bold">{{ $form->total_submissions }}</span>
+                                        </td>
+                                        <td class="px-5 py-4 text-center">
+                                            @if($form->pending_count > 0)
+                                                <span class="bg-amber-50 text-amber-700 text-xs px-2.5 py-1 rounded-lg font-bold">{{ $form->pending_count }}</span>
+                                            @else
+                                                <span class="text-slate-300 text-sm">—</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-5 py-4 text-center">
+                                            @if($form->approved_count > 0)
+                                                <span class="bg-emerald-50 text-emerald-700 text-xs px-2.5 py-1 rounded-lg font-bold">{{ $form->approved_count }}</span>
+                                            @else
+                                                <span class="text-slate-300 text-sm">—</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-5 py-4 text-center">
+                                            @if($form->rejected_count > 0)
+                                                <span class="bg-red-50 text-red-700 text-xs px-2.5 py-1 rounded-lg font-bold">{{ $form->rejected_count }}</span>
+                                            @else
+                                                <span class="text-slate-300 text-sm">—</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-5 py-4 text-center">
+                                            <a href="{{ route('medical-auditing.index', ['form_id' => $form->id]) }}" class="inline-flex items-center gap-1.5 text-blue-600 text-sm font-bold hover:underline">
+                                                <span>View</span>
+                                                <i class="fas fa-arrow-right text-xs"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             @endif
         @endisset
@@ -502,5 +463,76 @@
         document.addEventListener('keydown', event => {
             if (event.key === 'Escape') { closeAudit(); closeApprove(); closeReject(); closePdfPopup(); }
         });
+
+        // AJAX Live Search
+        let searchTimer = null;
+        let searchAbortController = null;
+        const searchInput = document.getElementById('globalSearch');
+        const statusSelect = document.getElementById('searchStatus');
+        const dateFromInput = document.getElementById('searchDateFrom');
+        const dateToInput = document.getElementById('searchDateTo');
+        const submissionsBody = document.getElementById('submissionsBody');
+        const paginationContainer = document.getElementById('paginationContainer');
+        const searchUrl = '{{ route("medical-auditing.search") }}';
+
+        function performSearch() {
+            // Cancel any in-flight request before starting a new one
+            if (searchAbortController) {
+                searchAbortController.abort();
+            }
+            searchAbortController = new AbortController();
+            const { signal } = searchAbortController;
+
+            const params = new URLSearchParams();
+            const formId = document.getElementById('searchFormId').value;
+            const q = searchInput.value.trim();
+            const status = statusSelect.value;
+            const dateFrom = dateFromInput.value;
+            const dateTo = dateToInput.value;
+
+            if (formId) params.set('form_id', formId);
+            if (q) params.set('q', q);
+            if (status) params.set('status', status);
+            if (dateFrom) params.set('date_from', dateFrom);
+            if (dateTo) params.set('date_to', dateTo);
+
+            submissionsBody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-slate-400"><i class="fas fa-spinner fa-spin mr-2"></i>Searching...</td></tr>';
+
+            fetch(`${searchUrl}?${params.toString()}`, {
+                headers: { Accept: 'application/json' },
+                signal
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    submissionsBody.innerHTML = data.html;
+                    // Update pagination if present in the partial
+                    const newPagination = submissionsBody.querySelector('[data-pagination]');
+                    if (newPagination) {
+                        paginationContainer.innerHTML = newPagination.innerHTML;
+                        newPagination.remove();
+                    } else {
+                        paginationContainer.innerHTML = '';
+                    }
+                }
+            })
+            .catch(error => {
+                // Ignore abort errors - they happen when a newer request superseded this one
+                if (error.name === 'AbortError') return;
+                submissionsBody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-red-400">Error loading results.</td></tr>';
+            });
+        }
+
+        function debounceSearch() {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(performSearch, 350);
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener('input', debounceSearch);
+            statusSelect.addEventListener('change', performSearch);
+            dateFromInput.addEventListener('change', performSearch);
+            dateToInput.addEventListener('change', performSearch);
+        }
     </script>
 </x-app-layout>

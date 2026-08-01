@@ -29,7 +29,7 @@ class RegulationController extends Controller
 
         Regulation::create($request->all());
 
-        return redirect()->route('admin.regulations.index')->with('success', 'تمت إضافة اللائحة بنجاح');
+        return redirect()->route('admin.regulations.index')->with('success', 'Regulation added successfully.');
     }
 
     public function edit($id)
@@ -49,7 +49,7 @@ class RegulationController extends Controller
         $regulation = Regulation::findOrFail($id);
         $regulation->update($request->all());
 
-        return redirect()->route('admin.regulations.index')->with('success', 'تم تحديث اللائحة بنجاح');
+        return redirect()->route('admin.regulations.index')->with('success', 'Regulation updated successfully.');
     }
 
     public function destroy($id)
@@ -57,6 +57,6 @@ class RegulationController extends Controller
         $regulation = Regulation::findOrFail($id);
         $regulation->delete();
 
-        return redirect()->route('admin.regulations.index')->with('success', 'تم حذف اللائحة بنجاح');
+        return redirect()->route('admin.regulations.index')->with('success', 'Regulation deleted successfully.');
     }
 }

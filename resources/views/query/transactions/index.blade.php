@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المعاملات - الاستعلامات</title>
+    <title>Transactions - Inquiry</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { font-family: 'Cairo', sans-serif; }
+        * { font-family: 'Inter', sans-serif; }
         body { background: #f1f5f9; position: relative; overflow-x: hidden; }
 
         .orb { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.4; animation: float 20s infinite ease-in-out; pointer-events: none; z-index: 0; }
@@ -75,16 +75,16 @@
     <header class="premium-header relative z-10">
         <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between relative z-10">
             <div class="flex items-center gap-4">
-                <img src="{{ asset('images/logo.png') }}" alt="المُساندة" class="h-10 w-auto object-contain" style="filter: brightness(0) invert(1);">
+                <img src="{{ asset('images/logo.png') }}" alt="Almusanada" class="h-10 w-auto object-contain" style="filter: brightness(0) invert(1);">
                 <div class="w-px h-8 bg-white/20"></div>
-                <h1 class="text-lg font-bold text-white">المعاملات</h1>
+                <h1 class="text-lg font-bold text-white">Transactions</h1>
             </div>
             <div class="flex items-center gap-4">
-                <a href="{{ route('query.dashboard') }}" class="text-sm font-semibold text-white/70 hover:text-white transition">الرئيسية</a>
+                <a href="{{ route('query.dashboard') }}" class="text-sm font-semibold text-white/70 hover:text-white transition">Home</a>
                 <form action="{{ route('query.logout') }}" method="POST" style="display:inline;">
                     @csrf
                     <button type="submit" class="btn-logout px-4 py-2 rounded-xl font-semibold text-sm">
-                        <i class="fas fa-sign-out-alt ml-1"></i> خروج
+                        <i class="fas fa-sign-out-alt ml-1"></i> Logout
                     </button>
                 </form>
             </div>
@@ -96,26 +96,26 @@
         <div class="filter-card p-6 mb-6">
             <form method="GET" action="{{ route('query.transactions.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1.5">رقم المعاملة</label>
+                    <label class="block text-xs font-bold text-slate-500 mb-1.5">Transaction Number</label>
                     <input type="text" name="transaction_number" value="{{ request('transaction_number') }}" class="filter-input w-full" placeholder="MS-1">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1.5">اسم المالك</label>
-                    <input type="text" name="owner_name" value="{{ request('owner_name') }}" class="filter-input w-full" placeholder="الاسم">
+                    <label class="block text-xs font-bold text-slate-500 mb-1.5">Owner Name</label>
+                    <input type="text" name="owner_name" value="{{ request('owner_name') }}" class="filter-input w-full" placeholder="Name">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1.5">الحالة</label>
+                    <label class="block text-xs font-bold text-slate-500 mb-1.5">Status</label>
                     <select name="status" class="filter-input w-full">
-                        <option value="">الكل</option>
+                        <option value="">All</option>
                         @foreach($statuses as $status)
                             <option value="{{ $status }}" {{ request('status') === $status ? 'selected' : '' }}>{{ $status }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1.5">العميل</label>
+                    <label class="block text-xs font-bold text-slate-500 mb-1.5">Customer</label>
                     <select name="user_id" class="filter-input w-full">
-                        <option value="">الكل</option>
+                        <option value="">All</option>
                         @foreach($customers as $id => $name)
                             <option value="{{ $id }}" {{ request('user_id') == $id ? 'selected' : '' }}>{{ $name }}</option>
                         @endforeach
@@ -123,10 +123,10 @@
                 </div>
                 <div class="lg:col-span-4 flex gap-3">
                     <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white rounded-xl font-semibold text-sm hover:bg-blue-700 transition">
-                        <i class="fas fa-search ml-1"></i> بحث
+                        <i class="fas fa-search ml-1"></i> Search
                     </button>
                     <a href="{{ route('query.transactions.index') }}" class="px-6 py-2.5 bg-slate-100 text-slate-600 rounded-xl font-semibold text-sm hover:bg-slate-200 transition">
-                        إعادة تعيين
+                        Reset
                     </a>
                 </div>
             </form>
@@ -137,14 +137,14 @@
             <div class="overflow-x-auto">
                 <table class="w-full">
                     <thead>
-                        <tr class="bg-slate-50 text-right">
-                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">رقم المعاملة</th>
-                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">العميل</th>
-                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">المالك</th>
-                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">التفاصيل</th>
-                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">الحالة</th>
-                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">التاريخ</th>
-                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">إجراءات</th>
+                        <tr class="bg-slate-50 text-left">
+                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Transaction #</th>
+                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Customer</th>
+                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Owner</th>
+                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Details</th>
+                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Status</th>
+                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Date</th>
+                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
@@ -160,13 +160,13 @@
                                 <td class="px-6 py-4 text-sm text-slate-500">{{ $transaction->created_at->format('Y/m/d') }}</td>
                                 <td class="px-6 py-4">
                                     <a href="{{ route('query.transactions.show', $transaction) }}" class="text-blue-600 hover:text-blue-700 font-semibold text-sm">
-                                        <i class="fas fa-eye"></i> عرض
+                                        <i class="fas fa-eye"></i> View
                                     </a>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="px-6 py-12 text-center text-slate-400">لا توجد معاملات</td>
+                                <td colspan="7" class="px-6 py-12 text-center text-slate-400">No transactions</td>
                             </tr>
                         @endforelse
                     </tbody>

@@ -30,7 +30,7 @@ class ServiceController extends Controller
 
         Service::create($request->all());
 
-        return redirect()->route('admin.services.index')->with('success', 'تمت إضافة الخدمة بنجاح');
+        return redirect()->route('admin.services.index')->with('success', 'Service added successfully.');
     }
 
     public function edit($id)
@@ -51,7 +51,7 @@ class ServiceController extends Controller
         $service = Service::findOrFail($id);
         $service->update($request->all());
 
-        return redirect()->route('admin.services.index')->with('success', 'تم تحديث الخدمة بنجاح');
+        return redirect()->route('admin.services.index')->with('success', 'Service updated successfully.');
     }
 
     public function destroy($id)
@@ -59,6 +59,6 @@ class ServiceController extends Controller
         $service = Service::findOrFail($id);
         $service->delete();
 
-        return redirect()->route('admin.services.index')->with('success', 'تم حذف الخدمة بنجاح');
+        return redirect()->route('admin.services.index')->with('success', 'Service deleted successfully.');
     }
 }

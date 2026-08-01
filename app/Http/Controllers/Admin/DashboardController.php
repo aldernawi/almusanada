@@ -13,10 +13,10 @@ class DashboardController extends Controller
     public function index()
     {
         $profile = CompanyProfile::firstOrCreate([], [
-            'company_name' => 'الشركة المساندة',
-            'hero_title' => 'مرحباً بك في موقعنا حيث يبدأ الإبداع',
-            'hero_description' => 'نقدم لك حلولاً مبتكرة وتصاميم عصرية تناسب احتياجاتك. نحن هنا لنحول أفكارك إلى واقع ملموس باحترافية عالية.',
-            'about_text' => 'نحن شركة رائدة في مجال تكنولوجيا المعلومات...',
+            'company_name' => 'Almusanada',
+            'hero_title' => 'Welcome to our website where creativity begins',
+            'hero_description' => 'We provide you with innovative solutions and modern designs that suit your needs. We are here to turn your ideas into tangible reality with high professionalism.',
+            'about_text' => 'We are a leading company in the field of information technology...',
             'primary_color' => '#007bff',
             'secondary_color' => '#0056b3',
             'font_size' => '12px',
@@ -50,6 +50,6 @@ class DashboardController extends Controller
         $profile = CompanyProfile::first();
         $profile->update($request->all());
 
-        return redirect()->back()->with('success', 'تم تحديث البيانات بنجاح');
+        return redirect()->back()->with('success', 'Data updated successfully');
     }
 }

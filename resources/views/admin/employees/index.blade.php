@@ -1,13 +1,14 @@
 @extends('layouts.website-app')
 
-@section('content')
+@section('page_title', 'Team Management')
     <div class="container mx-auto px-4 py-8">
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-extrabold text-slate-800">إدارة فريق العمل</h2>
+            <h1 class="text-2xl font-extrabold text-slate-800">Team Management</h1>
+            <p class="text-slate-500 mt-1 font-medium">Manage team members displayed on the website</p>
             <a href="{{ route('admin.employees.create') }}"
                 class="bg-slate-900 hover:bg-blue-600 text-white font-bold px-5 py-2.5 rounded-xl transition flex items-center gap-2 text-sm hover:shadow-lg hover:shadow-blue-500/20 hover:-translate-y-0.5 duration-300">
                 <i class="fas fa-user-plus"></i>
-                إضافة موظف جديد
+                Add New Member
             </a>
         </div>
 
@@ -24,10 +25,10 @@
             <table class="min-w-full leading-normal">
                 <thead>
                     <tr>
-                        <th class="px-5 py-3 border-b-2 border-slate-100 bg-slate-50 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">الاسم</th>
-                        <th class="px-5 py-3 border-b-2 border-slate-100 bg-slate-50 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">الوظيفة</th>
-                        <th class="px-5 py-3 border-b-2 border-slate-100 bg-slate-50 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">البريد الإلكتروني</th>
-                        <th class="px-5 py-3 border-b-2 border-slate-100 bg-slate-50 text-center text-xs font-bold text-slate-500 uppercase tracking-wider">الإجراءات</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase">Name</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase">Position</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase">Email</th>
+                        <th class="px-6 py-4 text-center text-xs font-bold text-slate-500 uppercase">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -45,12 +46,12 @@
                             <td class="px-5 py-4 bg-white text-sm text-center">
                                 <div class="flex justify-center gap-3">
                                     <a href="{{ route('employee.show', $employee->id) }}" target="_blank"
-                                        class="text-blue-600 hover:text-blue-800 font-semibold text-sm transition flex items-center gap-1"><i class="fas fa-eye text-xs"></i> عرض</a>
+                                        class="text-blue-600 hover:text-blue-800 font-semibold text-sm transition flex items-center gap-1"><i class="fas fa-eye text-xs"></i> View</a>
                                     <form action="{{ route('admin.employees.destroy', $employee->id) }}" method="POST"
-                                        onsubmit="return confirm('هل أنت متأكد من الحذف؟');">
+                                        onsubmit="return confirm('Are you sure you want to delete this member?');" class="inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-800 font-semibold text-sm transition flex items-center gap-1"><i class="fas fa-trash text-xs"></i> حذف</button>
+                                        <button type="submit" class="text-red-600 hover:text-red-800 font-semibold text-sm transition flex items-center gap-1"><i class="fas fa-trash text-xs"></i> Delete</button>
                                     </form>
                                 </div>
                             </td>

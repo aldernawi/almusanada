@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بوابة الاستعلام - تسجيل الدخول | الشركة المساندة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>Inquiry Portal - Login | Almusanada</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Inter', sans-serif;
             min-height: 100vh;
             background: linear-gradient(135deg, #080c14 0%, #0f172a 50%, #1e293b 100%);
             display: flex; align-items: center; justify-content: center;
@@ -88,7 +88,7 @@
         .form-input {
             width: 100%; padding: 0.9rem 2.75rem 0.9rem 1.125rem;
             border: 1.5px solid #e2e8f0; border-radius: 14px;
-            font-family: 'Cairo', sans-serif; font-size: 0.95rem; color: #1e293b;
+            font-family: 'Inter', sans-serif; font-size: 0.95rem; color: #1e293b;
             background: #f8fafc; outline: none; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .form-input:focus { border-color: #2563eb; background: white; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1), 0 4px 16px rgba(37, 99, 235, 0.12); transform: translateY(-1px); }
@@ -101,7 +101,7 @@
         .btn-login {
             width: 100%; padding: 1rem; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
             color: white; border: none; border-radius: 14px;
-            font-family: 'Cairo', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer;
+            font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer;
             transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); margin-top: 0.25rem;
             box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
             display: flex; align-items: center; justify-content: center; gap: 0.5rem; position: relative; overflow: hidden;
@@ -133,15 +133,15 @@
     <div class="login-wrapper">
         <div class="login-brand">
             <div class="logo-wrap">
-                <img src="{{ asset('images/logo.png') }}" alt="الشركة المساندة للتأمين" style="max-width: 320px; height: auto; filter: brightness(0) invert(1);">
+                <img src="{{ asset('images/logo.png') }}" alt="Almusanada Insurance" style="max-width: 320px; height: auto; filter: brightness(0) invert(1);">
             </div>
-            <h1>بوابة الاستعلام</h1>
-            <p>منصة الشركة المساندة للعملاء</p>
+            <h1>Inquiry Portal</h1>
+            <p>Almusanada customer platform</p>
         </div>
 
         <div class="login-card">
-            <div class="card-title">تسجيل الدخول</div>
-            <div class="card-subtitle">أدخل بيانات حسابك للبحث عن معاملتك</div>
+            <div class="card-title">Login</div>
+            <div class="card-subtitle">Enter your account credentials to search for your transaction</div>
 
             @if ($errors->any())
                 <div class="error-box">
@@ -156,18 +156,18 @@
             <form action="{{ route('customer.login.post') }}" method="POST">
                 @csrf
                 <div class="form-group">
-                    <label for="username" class="form-label">اسم المستخدم</label>
+                    <label for="username" class="form-label">Username</label>
                     <div class="input-wrap">
                         <input type="text" id="username" name="username"
                             value="{{ old('username') }}"
                             class="form-input"
-                            placeholder="أدخل اسم المستخدم"
+                            placeholder="Enter username"
                             required autofocus>
                         <i class="fas fa-user input-icon"></i>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="password" class="form-label">كلمة المرور</label>
+                    <label for="password" class="form-label">Password</label>
                     <div class="input-wrap">
                         <input type="password" id="password" name="password"
                             class="form-input"
@@ -181,11 +181,11 @@
                 </div>
                 <button type="submit" class="btn-login">
                     <i class="fas fa-sign-in-alt"></i>
-                    <span>دخول إلى لوحتي</span>
+                    <span>Login to My Dashboard</span>
                 </button>
                 <div class="secure-badge">
                     <i class="fas fa-shield-alt"></i>
-                    <span>اتصال آمن ومشفّر</span>
+                    <span>Secure encrypted connection</span>
                 </div>
             </form>
         </div>
@@ -194,7 +194,7 @@
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
-            العودة إلى الصفحة الرئيسية
+            Back to homepage
         </a>
     </div>
 

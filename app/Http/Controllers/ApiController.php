@@ -22,7 +22,7 @@ class ApiController extends Controller
         if ($form->user_id !== auth()->id()) {
             return response()->json([
                 'success' => false,
-                'message' => 'غير مصرح لك بالوصول لهذا النموذج'
+                'message' => 'You are not authorized to access this form'
             ], 403);
         }
 
@@ -67,7 +67,7 @@ class ApiController extends Controller
         if ($form->user_id !== auth()->id()) {
             return response()->json([
                 'success' => false,
-                'message' => 'غير مصرح لك بالوصول لهذا النموذج'
+                'message' => 'You are not authorized to access this form'
             ], 403);
         }
 

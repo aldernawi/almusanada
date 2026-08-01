@@ -27,8 +27,8 @@ class AuthController extends Controller
             if (Auth::user()->role !== 'admin') {
                 Auth::logout();
                 return back()->withErrors([
-                    'username' => 'ليست لديك صلاحية الدخول لهذه المنطقة.',
-                ]);
+                    'username' => 'You do not have permission to access this area.',
+                ])->withInput();
             }
 
             $request->session()->regenerate();
@@ -37,7 +37,7 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'username' => 'اسم المستخدم أو كلمة المرور غير صحيحة.',
+            'username' => 'Incorrect username or password.',
         ])->onlyInput('username');
     }
 

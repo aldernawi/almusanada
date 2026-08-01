@@ -6,8 +6,10 @@ use App\Events\MedicalAuditCompleted;
 use App\Models\Form;
 use App\Models\FormSubmission;
 use App\Models\SubmissionData;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
 class MedicalAuditingController extends Controller
@@ -39,7 +41,7 @@ class MedicalAuditingController extends Controller
             }
 
             if ($request->filled('search')) {
-                $query->whereKey($request->integer('search'));
+                $this->applySearch($query, trim($request->string('search')));
             }
 
             if ($request->filled('date_from')) {
@@ -74,6 +76,53 @@ class MedicalAuditingController extends Controller
             ->get(['id', 'title', 'description']);
 
         return view('medical-auditing.index', compact('forms'));
+    }
+
+    public function search(Request $request)
+    {
+        $user = Auth::user();
+        $this->ensureAuditor($user);
+
+        $formIds = $user->isAdmin()
+            ? Form::query()->pluck('id')
+            : $user->assignedForms()->pluck('forms.id');
+
+        $query = FormSubmission::query()
+            ->with(['form:id,title', 'reviewer:id,name', 'submissionData' => function ($q) {
+                $q->whereHas('field', fn ($f) => $f->where('field_type', 'file'))
+                  ->whereNotNull('file_data');
+            }])
+            ->whereIn('form_id', $formIds)
+            ->latest('submitted_at');
+
+        if ($request->filled('form_id')) {
+            $query->where('form_id', $request->integer('form_id'));
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->string('status'));
+        }
+
+        if ($request->filled('q')) {
+            $this->applySearch($query, trim($request->string('q')));
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('submitted_at', '>=', $request->date('date_from'));
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('submitted_at', '<=', $request->date('date_to'));
+        }
+
+        $submissions = $query->paginate(30)->withQueryString();
+
+        $statusLabels = ['approved' => 'Approved', 'rejected' => 'Rejected', 'pending' => 'Pending'];
+
+        return response()->json([
+            'success' => true,
+            'html' => view('medical-auditing.partials.submissions-table', compact('submissions', 'statusLabels'))->render(),
+        ]);
     }
 
     public function data(FormSubmission $submission)
@@ -218,7 +267,7 @@ class MedicalAuditingController extends Controller
             $query->where('form_id', $request->integer('form_id'));
         }
         if ($request->filled('search')) {
-            $query->whereKey($request->integer('search'));
+            $this->applySearch($query, trim($request->string('search')));
         }
         if ($request->filled('date_from')) {
             $query->whereDate('submitted_at', '>=', $request->date('date_from'));
@@ -308,5 +357,74 @@ class MedicalAuditingController extends Controller
         if (Auth::user()->isViewer()) {
             abort(403, 'Viewers can only view submissions and cannot perform actions.');
         }
+    }
+
+    /**
+     * Apply a search filter across submission ID, status, notes, field values,
+     * reviewer name, and form title. Uses MySQL FULLTEXT (MATCH...AGAINST) for
+     * the large `submission_data.value` and `review_notes` columns so search
+     * stays fast even with millions of rows (avoids a LIKE '%..%' table scan).
+     * Falls back to LIKE for non-MySQL connections (e.g. sqlite in tests).
+     */
+    private function applySearch(Builder $query, string $search): void
+    {
+        if ($search === '') {
+            return;
+        }
+
+        $isMysql = Schema::getConnection()->getDriverName() === 'mysql';
+        $booleanTerm = $this->toBooleanSearchTerm($search);
+
+        $query->where(function (Builder $q) use ($search, $booleanTerm, $isMysql) {
+            if (ctype_digit($search)) {
+                $q->orWhere('id', (int) $search);
+            }
+
+            $q->orWhere('status', 'LIKE', "%{$search}%");
+
+            if ($isMysql && $booleanTerm !== '') {
+                $q->orWhereRaw('MATCH(review_notes) AGAINST (? IN BOOLEAN MODE)', [$booleanTerm]);
+            } else {
+                $q->orWhere('review_notes', 'LIKE', "%{$search}%");
+            }
+
+            $q->orWhereHas('submissionData', function (Builder $sq) use ($search, $booleanTerm, $isMysql) {
+                if ($isMysql && $booleanTerm !== '') {
+                    $sq->whereRaw('MATCH(value) AGAINST (? IN BOOLEAN MODE)', [$booleanTerm]);
+                } else {
+                    $sq->where('value', 'LIKE', "%{$search}%");
+                }
+            });
+
+            $q->orWhereHas('reviewer', function (Builder $rq) use ($search) {
+                $rq->where('name', 'LIKE', "%{$search}%");
+            });
+
+            $q->orWhereHas('form', function (Builder $fq) use ($search) {
+                $fq->where('title', 'LIKE', "%{$search}%");
+            });
+        });
+    }
+
+    /**
+     * Convert a free-text search phrase into a MySQL BOOLEAN MODE fulltext
+     * expression requiring each word as a prefix match, e.g.
+     * "john smith" -> "+john* +smith*". Words shorter than the FULLTEXT
+     * minimum length (3 chars) are dropped since MySQL wouldn't index them
+     * anyway; the LIKE fallback columns still cover short terms.
+     */
+    private function toBooleanSearchTerm(string $search): string
+    {
+        $words = preg_split('/\s+/', trim($search));
+
+        $terms = array_filter(array_map(function ($word) {
+            $clean = preg_replace('/[+\-<>()~*"@]/', '', $word);
+            if ($clean === '' || mb_strlen($clean) < 3) {
+                return null;
+            }
+            return '+' . $clean . '*';
+        }, $words));
+
+        return implode(' ', $terms);
     }
 }

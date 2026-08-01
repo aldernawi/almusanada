@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="فريق عمل الشركة المساندة - تعرف على أعضاء فريقنا المحترف">
-    <title>فريق العمل - الشركة المساندة</title>
+    <meta name="description" content="Almusanada Team - Meet our professional team members">
+    <title>Our Team - Almusanada</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -16,7 +16,7 @@
         }
 
         body {
-            font-family: 'Tajawal', sans-serif;
+            font-family: 'Inter', sans-serif;
             background: #f8fafc;
             color: #1e293b;
             min-height: 100vh;
@@ -262,7 +262,7 @@
             color: #475569;
             border-radius: 10px;
             border: none;
-            font-family: 'Tajawal', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-weight: 700;
             font-size: 0.9rem;
             cursor: pointer;
@@ -332,22 +332,22 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                     </svg>
                 </div>
-                <span class="nav-brand-text">الشركة المساندة</span>
+                <span class="nav-brand-text">Almusanada</span>
             </a>
             <a href="{{ url('/') }}" class="nav-back">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>
-                العودة للرئيسية
+                Back to Home
             </a>
         </div>
     </nav>
 
     <!-- Hero -->
     <div class="page-hero">
-        <div class="hero-label">👥 الفريق</div>
-        <h1>فريق العمل</h1>
-        <p>تعرف على أعضاء فريقنا المحترف المتميز</p>
+        <div class="hero-label">👥 Team</div>
+        <h1>Our Team</h1>
+        <p>Meet our distinguished professional team members</p>
     </div>
 
     <!-- Team Grid -->
@@ -357,8 +357,8 @@
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                 </svg>
-                <h3>لا يوجد أعضاء في الفريق حالياً</h3>
-                <p>سيتم إضافة أعضاء الفريق قريباً.</p>
+                <h3>No team members currently</h3>
+                <p>Team members will be added soon.</p>
             </div>
         @else
             <div class="team-grid">
@@ -386,13 +386,13 @@
                                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zm7.5 0c0 4.97-6.716 9-10.5 9S1.5 16.97 1.5 12 8.216 3 12 3s10.5 4.03 10.5 9z"/>
                                     </svg>
-                                    عرض الملف الشخصي
+                                    View Profile
                                 </a>
                                 <button onclick="printQR('{{ $employee->id }}', '{{ $employee->name }}')" class="btn-print">
                                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
                                     </svg>
-                                    طباعة رمز QR
+                                    Print QR Code
                                 </button>
                             </div>
                         </div>
@@ -403,7 +403,7 @@
     </div>
 
     <footer>
-        <p>© {{ date('Y') }} الشركة المساندة - جميع الحقوق محفوظة</p>
+        <p>© {{ date('Y') }} Almusanada - All rights reserved</p>
     </footer>
 
     <script>
@@ -412,11 +412,11 @@
             const win = window.open('', '_blank');
             win.document.write(`
                 <!DOCTYPE html>
-                <html lang="ar" dir="rtl">
+                <html lang="en" dir="ltr">
                 <head>
                     <meta charset="UTF-8">
                     <title>QR Code - ${name}</title>
-                    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+                    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
                     <style>
                         body {
                             display: flex;
@@ -424,7 +424,7 @@
                             align-items: center;
                             justify-content: center;
                             min-height: 100vh;
-                            font-family: 'Tajawal', sans-serif;
+                            font-family: 'Inter', sans-serif;
                             margin: 0;
                             background: #f8fafc;
                         }
@@ -465,10 +465,10 @@
                 </head>
                 <body onload="window.print();window.close()">
                     <div class="card">
-                        <div class="brand">الشركة المساندة</div>
+                        <div class="brand">Almusanada</div>
                         <h1>${name}</h1>
                         <img src="${qrUrl}" alt="QR Code" />
-                        <div class="footer">امسح الكود للاطلاع على الملف الشخصي</div>
+                        <div class="footer">Scan the code to view the profile</div>
                     </div>
                 </body>
                 </html>

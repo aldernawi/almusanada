@@ -1,6 +1,6 @@
 @extends('layouts.website-app')
 
-@section('page_title', 'إنشاء مستخدم جديد')
+@section('page_title', 'Add New User')
 
 @section('content')
     <div class="container mx-auto px-4 py-8 max-w-2xl">
@@ -10,73 +10,73 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                 </svg>
-                العودة إلى قائمة المستخدمين
+                Back to users list
             </a>
         </div>
 
         <div class="bg-white rounded-lg shadow-md p-8">
-            <h1 class="text-2xl font-bold text-gray-800 mb-6 pb-4 border-b">إنشاء حساب جديد</h1>
+            <h1 class="text-2xl font-bold text-gray-800 mb-6 pb-4 border-b">Create New Account</h1>
 
             <form action="{{ route('admin.reviewers.store') }}" method="POST">
                 @csrf
                 <div class="space-y-6">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">الدور <span class="text-red-500">*</span></label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Role <span class="text-red-500">*</span></label>
                         <div class="grid grid-cols-2 gap-3">
                             <label class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-green-400 transition has-[:checked]:border-green-500 has-[:checked]:bg-green-50">
                                 <input type="radio" name="role" value="reviewer" checked class="text-green-600 focus:ring-green-500">
                                 <div>
-                                    <p class="text-sm font-bold text-gray-800">مراجع</p>
-                                    <p class="text-xs text-gray-500">يقدر يعمل موافقة/رفض وتعديل الملاحظات</p>
+                                    <p class="text-sm font-bold text-gray-800">Reviewer</p>
+                                    <p class="text-xs text-gray-500">Can approve/reject and edit notes</p>
                                 </div>
                             </label>
                             <label class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-indigo-400 transition has-[:checked]:border-indigo-500 has-[:checked]:bg-indigo-50">
                                 <input type="radio" name="role" value="viewer" class="text-indigo-600 focus:ring-indigo-500">
                                 <div>
-                                    <p class="text-sm font-bold text-gray-800">اطلاع</p>
-                                    <p class="text-xs text-gray-500">عرض فقط بدون أي إجراءات</p>
+                                    <p class="text-sm font-bold text-gray-800">Viewer</p>
+                                    <p class="text-xs text-gray-500">View only, no actions allowed</p>
                                 </div>
                             </label>
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">الاسم <span
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Name <span
                                 class="text-red-500">*</span></label>
                         <input type="text" name="name" value="{{ old('name') }}"
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition outline-none"
-                            placeholder="الاسم الكامل" required>
+                            placeholder="Full name" required>
                         @error('name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">اسم المستخدم <span
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Username <span
                                 class="text-red-500">*</span></label>
                         <input type="text" name="username" value="{{ old('username') }}"
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition outline-none"
-                            placeholder="اسم المستخدم للدخول إلى لوحة المراجعة" required>
+                            placeholder="Username for login to the review panel" required>
                         @error('username') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">كلمة المرور <span
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Password <span
                                 class="text-red-500">*</span></label>
                         <input type="text" name="password"
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition outline-none"
-                            placeholder="كلمة المرور (6 أحرف على الأقل)" required>
+                            placeholder="Password (at least 6 characters)" required>
                         @error('password') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                        <p class="text-gray-400 text-xs mt-1">ملاحظة: كلمة المرور ظاهرة هنا لتتمكن من إعطائها للمستخدم</p>
+                        <p class="text-gray-400 text-xs mt-1">Note: Password is visible here so you can share it with the user</p>
                     </div>
 
                     <div id="permissions-section">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">الصلاحيات</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Permissions</label>
                         <div class="bg-blue-50 p-4 rounded-lg">
                             <label class="flex items-center">
                                 <input type="checkbox" name="can_view_all_transactions" value="1"
                                        class="ml-2 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                <span class="text-sm text-gray-700">السماح برؤية جميع المعاملات</span>
+                                <span class="text-sm text-gray-700">Allow viewing all transactions</span>
                             </label>
-                            <p class="text-gray-500 text-xs mt-2 ml-6">إذا لم يتم تحديده، سيرى المراجع معاملاته فقط</p>
+                            <p class="text-gray-500 text-xs mt-2 ml-6">If unchecked, the reviewer will only see their assigned transactions</p>
                         </div>
                     </div>
                 </div>
@@ -84,7 +84,7 @@
                 <div class="flex justify-end mt-8">
                     <button type="submit"
                         class="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-3 rounded-lg transition">
-                        إنشاء الحساب
+                        Create Account
                     </button>
                 </div>
             </form>

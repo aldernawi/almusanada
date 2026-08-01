@@ -1,18 +1,18 @@
 @extends('layouts.website-app')
 
-@section('page_title', 'إدارة العملاء')
+@section('page_title', 'Customer Management')
 
 @section('content')
     <div class="container mx-auto px-4 py-8 max-w-5xl">
         <div class="flex justify-between items-center mb-8">
             <div>
-                <h1 class="text-2xl font-extrabold text-slate-800">إدارة حسابات العملاء</h1>
-                <p class="text-slate-500 mt-1 font-medium">إنشاء وإدارة حسابات بوابة الاستعلام</p>
+                <h1 class="text-2xl font-extrabold text-slate-800">Manage Customer Accounts</h1>
+                <p class="text-slate-500 mt-1 font-medium">Create and manage inquiry portal accounts</p>
             </div>
             <a href="{{ route('admin.customers.create') }}"
                 class="bg-slate-900 hover:bg-blue-600 text-white font-bold px-5 py-2.5 rounded-xl transition flex items-center gap-2 text-sm hover:shadow-lg hover:shadow-blue-500/20 hover:-translate-y-0.5 duration-300">
                 <i class="fas fa-user-plus"></i>
-                إضافة عميل جديد
+                Add New Customer
             </a>
         </div>
 
@@ -29,11 +29,11 @@
             <table class="min-w-full">
                 <thead>
                     <tr class="bg-slate-50 border-b border-slate-100">
-                        <th class="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase">الاسم</th>
-                        <th class="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase">اسم المستخدم</th>
-                        <th class="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase">الصلاحيات</th>
-                        <th class="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase">تاريخ الإنشاء</th>
-                        <th class="px-6 py-4 text-center text-xs font-bold text-slate-500 uppercase">الإجراءات</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase">Name</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase">Username</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase">Permissions</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase">Created Date</th>
+                        <th class="px-6 py-4 text-center text-xs font-bold text-slate-500 uppercase">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -43,9 +43,9 @@
                             <td class="px-6 py-4 text-blue-600 font-bold">{{ $customer->username }}</td>
                             <td class="px-6 py-4 text-slate-600">
                                 @if($customer->can_view_transactions)
-                                    <span class="bg-blue-50 text-blue-700 px-2.5 py-1 rounded-lg text-xs font-bold">عرض جميع المعاملات</span>
+                                    <span class="bg-blue-50 text-blue-700 px-2.5 py-1 rounded-lg text-xs font-bold">View All Transactions</span>
                                 @else
-                                    <span class="text-slate-400 text-xs">معاملاته فقط</span>
+                                    <span class="text-slate-400 text-xs">Own transactions only</span>
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-slate-500 text-sm">{{ $customer->created_at->format('Y/m/d') }}</td>
@@ -54,19 +54,19 @@
                                     <a href="{{ route('admin.customers.edit', $customer->id) }}" 
                                        class="text-blue-600 hover:text-blue-800 font-semibold text-sm transition flex items-center gap-1">
                                         <i class="fas fa-edit text-xs"></i>
-                                        تعديل
+                                        Edit
                                     </a>
                                     
                                     <span class="text-slate-200">|</span>
                                     
                                     <form action="{{ route('admin.customers.destroy', $customer->id) }}" method="POST"
-                                        onsubmit="return confirm('هل أنت متأكد من حذف هذا الحساب؟');" class="inline">
+                                        onsubmit="return confirm('Are you sure you want to delete this account?');" class="inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
                                             class="text-red-600 hover:text-red-800 font-semibold text-sm transition flex items-center gap-1">
                                             <i class="fas fa-trash text-xs"></i>
-                                            حذف
+                                            Delete
                                         </button>
                                     </form>
                                 </div>
@@ -74,7 +74,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-12 text-center text-slate-400">لا توجد حسابات عملاء حالياً</td>
+                            <td colspan="5" class="px-6 py-12 text-center text-slate-400">No customer accounts found</td>
                         </tr>
                     @endforelse
                 </tbody>

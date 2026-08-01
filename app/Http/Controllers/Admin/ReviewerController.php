@@ -43,7 +43,7 @@ class ReviewerController extends Controller
             'can_view_all_transactions' => $role === 'viewer' ? false : $request->has('can_view_all_transactions'),
         ]);
 
-        $message = $role === 'viewer' ? 'تم إنشاء حساب الاطلاع بنجاح' : 'تم إنشاء حساب المراجع بنجاح';
+        $message = $role === 'viewer' ? 'Viewer account created successfully' : 'Reviewer account created successfully';
         return redirect()->route('admin.reviewers.index')->with('success', $message);
     }
 
@@ -74,7 +74,7 @@ class ReviewerController extends Controller
         $reviewer->can_view_all_transactions = $reviewer->role === 'viewer' ? false : $request->has('can_view_all_transactions');
         $reviewer->save();
 
-        $message = $reviewer->role === 'viewer' ? 'تم تحديث بيانات حساب الاطلاع بنجاح' : 'تم تحديث بيانات المراجع بنجاح';
+        $message = $reviewer->role === 'viewer' ? 'Viewer account updated successfully' : 'Reviewer account updated successfully';
         return redirect()->route('admin.reviewers.index')->with('success', $message);
     }
 
@@ -82,7 +82,7 @@ class ReviewerController extends Controller
     {
         $reviewer = User::whereIn('role', ['reviewer', 'viewer'])->findOrFail($id);
         $reviewer->delete();
-        $message = $reviewer->role === 'viewer' ? 'تم حذف حساب الاطلاع بنجاح' : 'تم حذف حساب المراجع بنجاح';
+        $message = $reviewer->role === 'viewer' ? 'Viewer account deleted successfully' : 'Reviewer account deleted successfully';
         return redirect()->route('admin.reviewers.index')->with('success', $message);
     }
 }

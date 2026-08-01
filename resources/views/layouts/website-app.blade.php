@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name', 'الشركة المساندة') }} - لوحة التحكّم</title>
+    <title>{{ config('app.name', 'Almusanada') }} - Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: #f1f5f9;
         }
 
@@ -59,7 +59,7 @@
         .sidebar-link:hover {
             background: rgba(255, 255, 255, 0.06);
             color: white;
-            transform: translateX(-3px);
+            transform: translateX(3px);
         }
 
         .sidebar-link.active {
@@ -72,7 +72,7 @@
         .sidebar-link.active::before {
             content: '';
             position: absolute;
-            right: 0; top: 50%;
+            left: 0; top: 50%;
             transform: translateY(-50%);
             width: 3px; height: 60%;
             background: linear-gradient(180deg, #2563eb, #3b82f6);
@@ -150,60 +150,60 @@
         <aside class="w-72 premium-sidebar p-6 flex flex-col hidden lg:flex z-50">
             <!-- Brand -->
             <div class="mb-10 px-2 flex justify-center relative z-10">
-                <img src="{{ asset('images/logo.png') }}" alt="شركة المساندة" class="h-28 w-auto logo-glow" style="filter: brightness(0) invert(1) drop-shadow(0 0 15px rgba(37, 99, 235, 0.2));">
+                <img src="{{ asset('images/logo.png') }}" alt="Almusanada" class="h-28 w-auto logo-glow" style="filter: brightness(0) invert(1) drop-shadow(0 0 15px rgba(37, 99, 235, 0.2));">
             </div>
 
             <!-- Navigation -->
             <nav class="space-y-1 flex-1 relative z-10">
-                <p class="text-xs font-bold text-white/30 uppercase tracking-wider px-2 mb-3">القائمة الرئيسية</p>
+                <p class="text-xs font-bold text-white/30 uppercase tracking-wider px-2 mb-3">Main Menu</p>
                 <a href="{{ route('admin.dashboard') }}"
                     class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                     </svg>
-                    الرئيسية
+                    Dashboard
                 </a>
                 <a href="{{ route('admin.transactions.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.transactions.*') ? 'active' : '' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
-                    المعاملات
+                    Transactions
                 </a>
                 <a href="{{ route('admin.services.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.services.*') ? 'active' : '' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
                     </svg>
-                    خدماتنا
+                    Services
                 </a>
                 <a href="{{ route('admin.regulations.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.regulations.*') ? 'active' : '' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                     </svg>
-                    اللوائح
+                    Regulations
                 </a>
                 <a href="{{ route('admin.customers.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.customers.*') ? 'active' : '' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 01-9-4.354m3 5.918A8.982 8.982 0 0121 16v-1a6 6 0 00-6-6h-1.071"/>
                     </svg>
-                    العملاء
+                    Customers
                 </a>
                 <a href="{{ route('admin.employees.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.employees.*') ? 'active' : '' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                     </svg>
-                    الفريق
+                    Team
                 </a>
                 <a href="{{ route('admin.reviewers.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.reviewers.*') ? 'active' : '' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    المراجعون والاطلاع
+                    Reviewers & Viewers
                 </a>
             </nav>
 
@@ -214,7 +214,7 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                     </svg>
-                    زيارة الموقع
+                    Visit Website
                 </a>
                 <form action="{{ route('admin.logout') }}" method="POST">
                     @csrf
@@ -222,7 +222,7 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                         </svg>
-                        تسجيل الخروج
+                        Logout
                     </button>
                 </form>
             </div>
@@ -234,7 +234,7 @@
             <header class="h-[68px] premium-header border-b border-slate-100 flex items-center justify-between px-6 lg:px-8 shrink-0">
                 <!-- Mobile Brand -->
                 <div class="lg:hidden flex items-center gap-3">
-                    <img src="{{ asset('images/logo.png') }}" alt="الشركة المساندة" class="h-16 w-auto">
+                    <img src="{{ asset('images/logo.png') }}" alt="Almusanada" class="h-16 w-auto">
                 </div>
 
                 <!-- Breadcrumb -->
@@ -242,23 +242,23 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                     </svg>
-                    <span>لوحة التحكّم</span>
+                    <span>Dashboard</span>
                     <svg class="w-3 h-3 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                     </svg>
-                    <span class="text-slate-800 font-semibold">@yield('page_title', 'الرئيسية')</span>
+                    <span class="text-slate-800 font-semibold">@yield('page_title', 'Dashboard')</span>
                 </div>
 
                 <!-- Right Actions -->
                 <div class="flex items-center gap-3">
                     <!-- User Info -->
-                    <div class="flex items-center gap-3 pr-3 border-r border-slate-100">
+                    <div class="flex items-center gap-3 pl-3 border-l border-slate-100">
                         <div class="w-9 h-9 user-avatar rounded-full flex items-center justify-center text-white font-bold text-sm">
                             {{ mb_substr(Auth::user()->name, 0, 1) }}
                         </div>
                         <div class="hidden md:block">
                             <p class="text-sm font-bold text-slate-800 leading-tight">{{ Auth::user()->name }}</p>
-                            <p class="text-xs text-slate-400">مدير النظام</p>
+                            <p class="text-xs text-slate-400">Administrator</p>
                         </div>
                     </div>
                 </div>

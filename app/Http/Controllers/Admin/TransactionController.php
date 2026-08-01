@@ -54,7 +54,7 @@ class TransactionController extends Controller
             'pdf_path' => $pdfPath,
         ]);
 
-        return redirect()->route('admin.transactions.index')->with('success', 'تم إضافة المعاملة بنجاح ورقمها: ' . $transactionNumber);
+        return redirect()->route('admin.transactions.index')->with('success', 'Transaction added successfully. Transaction #: ' . $transactionNumber);
     }
 
     public function edit($id)
@@ -91,14 +91,14 @@ class TransactionController extends Controller
 
         $transaction->update($data);
 
-        return redirect()->route('admin.transactions.index')->with('success', 'تم تحديث المعاملة بنجاح');
+        return redirect()->route('admin.transactions.index')->with('success', 'Transaction updated successfully');
     }
 
     public function destroy($id)
     {
         $transaction = Transaction::findOrFail($id);
         $transaction->delete();
-        return redirect()->route('admin.transactions.index')->with('success', 'تم حذف المعاملة بنجاح');
+        return redirect()->route('admin.transactions.index')->with('success', 'Transaction deleted successfully');
     }
 
     public function updateStatus(Request $request)
@@ -112,7 +112,7 @@ class TransactionController extends Controller
         $transaction->status = $request->status;
         $transaction->save();
 
-        return redirect()->route('admin.transactions.index')->with('success', 'تم تحديث حالة المعاملة بنجاح');
+        return redirect()->route('admin.transactions.index')->with('success', 'Transaction status updated successfully');
     }
 
     // Customer Account Management
@@ -144,14 +144,14 @@ class TransactionController extends Controller
             'can_view_transactions' => $request->has('can_view_transactions'),
         ]);
 
-        return redirect()->route('admin.customers.index')->with('success', 'تم إنشاء حساب العميل بنجاح');
+        return redirect()->route('admin.customers.index')->with('success', 'Customer account created successfully');
     }
 
     public function destroyCustomer($id)
     {
         $customer = User::where('role', 'customer')->findOrFail($id);
         $customer->delete();
-        return redirect()->route('admin.customers.index')->with('success', 'تم حذف حساب العميل بنجاح');
+        return redirect()->route('admin.customers.index')->with('success', 'Customer account deleted successfully');
     }
 
     public function editCustomer($id)
@@ -184,6 +184,6 @@ class TransactionController extends Controller
 
         $customer->save();
 
-        return redirect()->route('admin.customers.index')->with('success', 'تم تحديث بيانات العميل بنجاح.');
+        return redirect()->route('admin.customers.index')->with('success', 'Customer account updated successfully.');
     }
 }

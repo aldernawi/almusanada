@@ -77,7 +77,7 @@
         }
 
         .nav-logo-img {
-            height: 180px; 
+            height: 50px; 
             width: auto; 
             object-fit: contain;
             filter: drop-shadow(0 4px 15px rgba(0,0,0,0.2)) brightness(0) invert(1);
@@ -86,7 +86,7 @@
 
         .navbar.scrolled .nav-logo-img {
             filter: drop-shadow(0 2px 5px rgba(30,58,138,0.1));
-            height: 120px;
+            height: 42px;
         }
 
 

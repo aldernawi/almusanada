@@ -8,13 +8,13 @@
                     d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
                 </path>
             </svg>
-            لوحة المراجعة الداخلية
+            Internal Review Panel
         </div>
         <div class="portal-nav">
-            <span class="text-white ml-4">مرحباً، {{ Auth::user()->name }}</span>
+            <span class="text-white ml-4">Welcome, {{ Auth::user()->name }}</span>
             <form action="{{ route('customer.logout') }}" method="POST" style="display:inline;">
                 @csrf
-                <button type="submit" class="btn-logout">خروج</button>
+                <button type="submit" class="btn-logout">Logout</button>
             </form>
         </div>
     </div>
@@ -23,21 +23,21 @@
         <!-- Permission Status -->
         <div class="portal-card" style="margin-bottom: 2rem;">
             <div class="flex items-center justify-between mb-6">
-                <h1 class="portal-title" style="text-align: right; font-size: 1.75rem;">لوحة المراجعة الخاصة بك</h1>
+                <h1 class="portal-title" style="text-align: left; font-size: 1.75rem;">Your Review Dashboard</h1>
                 <div class="permission-badge">
                     @if(Auth::user()->hasPermission('view_all_transactions'))
                         <span class="bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-xl text-sm font-bold">
-                            🔓 صلاحية كاملة
+                            🔓 Full Access
                         </span>
                     @else
                         <span class="bg-amber-50 text-amber-700 px-3 py-1.5 rounded-xl text-sm font-bold">
-                            🔒 صلاحية محدودة
+                            🔒 Limited Access
                         </span>
                     @endif
                 </div>
             </div>
             
-            <p class="portal-subtitle" style="text-align: right; margin-bottom: 1.5rem;">متابعة ومراجعة كافة المعاملات وحالاتها</p>
+            <p class="portal-subtitle" style="text-align: left; margin-bottom: 1.5rem;">Track and review all transactions and their statuses</p>
 
             @if(Auth::user()->hasPermission('view_all_transactions'))
                 <div class="bg-emerald-50 border-r-4 border-emerald-500 text-emerald-800 px-6 py-4 rounded-xl mb-6">
@@ -46,7 +46,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span class="font-medium">يمكنك رؤية جميع المعاملات في النظام</span>
+                        <span class="font-medium">You can view all transactions in the system</span>
                     </div>
                 </div>
             @else
@@ -56,7 +56,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.932-3L13.932 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.932 3z"></path>
                         </svg>
-                        <span class="font-medium">يمكنك رؤية معاملاتك فقط</span>
+                        <span class="font-medium">You can only view your assigned transactions</span>
                     </div>
                 </div>
             @endif
@@ -72,7 +72,7 @@
                         </div>
                         <div class="text-3xl font-bold">{{ $stats['total'] }}</div>
                     </div>
-                    <div class="text-white/70 text-sm font-medium">إجمالي المعاملات</div>
+                    <div class="text-white/70 text-sm font-medium">Total Transactions</div>
                 </div>
             </div>
             
@@ -84,7 +84,7 @@
                         </div>
                         <div class="text-3xl font-bold">{{ $stats['pending'] }}</div>
                     </div>
-                    <div class="text-white/70 text-sm font-medium">قيد الانتظار</div>
+                    <div class="text-white/70 text-sm font-medium">Pending</div>
                 </div>
             </div>
             
@@ -96,7 +96,7 @@
                         </div>
                         <div class="text-3xl font-bold">{{ $stats['approved'] }}</div>
                     </div>
-                    <div class="text-white/70 text-sm font-medium">موافق عليها</div>
+                    <div class="text-white/70 text-sm font-medium">Approved</div>
                 </div>
             </div>
             
@@ -108,7 +108,7 @@
                         </div>
                         <div class="text-3xl font-bold">{{ $stats['rejected'] }}</div>
                     </div>
-                    <div class="text-white/70 text-sm font-medium">مرفوضة</div>
+                    <div class="text-white/70 text-sm font-medium">Rejected</div>
                 </div>
             </div>
         </div>
@@ -116,12 +116,12 @@
         <!-- Transactions Table -->
         <div class="portal-card">
             <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-bold text-slate-800">قائمة المعاملات</h2>
+                <h2 class="text-xl font-bold text-slate-800">Transactions List</h2>
                 <div class="text-sm">
                     @if(Auth::user()->hasPermission('view_all_transactions'))
-                        <span class="text-emerald-600 font-bold">جميع المعاملات</span>
+                        <span class="text-emerald-600 font-bold">All Transactions</span>
                     @else
-                        <span class="text-amber-600 font-bold">معاملاتك فقط</span>
+                        <span class="text-amber-600 font-bold">Your Transactions Only</span>
                     @endif
                 </div>
             </div>
@@ -130,11 +130,11 @@
                 <table class="min-w-full">
                     <thead>
                         <tr class="bg-slate-50 border-b border-slate-100">
-                            <th class="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase">رقم المعاملة</th>
-                            <th class="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase">العميل</th>
-                            <th class="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase">التاريخ</th>
-                            <th class="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase">الحالة</th>
-                            <th class="px-6 py-4 text-center text-xs font-bold text-slate-500 uppercase">الإجراءات</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase">Transaction #</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase">Customer</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase">Date</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase">Status</th>
+                            <th class="px-6 py-4 text-center text-xs font-bold text-slate-500 uppercase">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
@@ -151,11 +151,11 @@
                                 <td class="px-6 py-4 text-slate-500">{{ $transaction->created_at->format('Y/m/d') }}</td>
                                 <td class="px-6 py-4">
                                     @if($transaction->status === 'pending')
-                                        <span class="bg-amber-100 text-amber-700 px-2.5 py-1 rounded-lg text-xs font-bold">قيد الانتظار</span>
+                                        <span class="bg-amber-100 text-amber-700 px-2.5 py-1 rounded-lg text-xs font-bold">Pending</span>
                                     @elseif($transaction->status === 'approved')
-                                        <span class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-lg text-xs font-bold">موافق عليها</span>
+                                        <span class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-lg text-xs font-bold">Approved</span>
                                     @elseif($transaction->status === 'rejected')
-                                        <span class="bg-red-100 text-red-700 px-2.5 py-1 rounded-lg text-xs font-bold">مرفوضة</span>
+                                        <span class="bg-red-100 text-red-700 px-2.5 py-1 rounded-lg text-xs font-bold">Rejected</span>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-center">
@@ -170,14 +170,14 @@
                                             PDF
                                         </a>
                                     @else
-                                        <span class="text-slate-300 text-sm">لا يوجد</span>
+                                        <span class="text-slate-300 text-sm">None</span>
                                     @endif
                                 </td>
                             </tr>
                         @empty
                             <tr>
                                 <td colspan="5" class="px-6 py-12 text-center text-slate-400">
-                                    لا توجد معاملات حالياً
+                                    No transactions found
                                 </td>
                             </tr>
                         @endforelse

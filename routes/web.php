@@ -190,6 +190,7 @@ Route::get('/forms/{form}/submissions/export/{format}', [FormSubmissionControlle
     // Medical Auditing Routes
     Route::prefix('medical-auditing')->group(function () {
         Route::get('/', [MedicalAuditingController::class, 'index'])->name('medical-auditing.index');
+        Route::get('/search', [MedicalAuditingController::class, 'search'])->name('medical-auditing.search');
         Route::get('/{submission}/data', [MedicalAuditingController::class, 'data'])->name('medical-auditing.data');
         Route::post('/{submission}/audit', [MedicalAuditingController::class, 'audit'])->name('medical-auditing.audit');
         Route::put('/{submission}/notes', [MedicalAuditingController::class, 'updateNotes'])->name('medical-auditing.notes');

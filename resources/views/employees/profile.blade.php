@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $employee->name }} - الملف الشخصي</title>
+    <title>{{ $employee->name }} - Profile</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Tajawal', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
@@ -225,7 +225,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
-                    إرسال بريد
+                    Send Email
                 </a>
                 @if($employee->linkedin)
                     <a href="{{ $employee->linkedin }}" target="_blank" class="btn btn-outline">
@@ -239,7 +239,7 @@
             </div>
 
             <div class="footer">
-                الشركة المساندة © {{ date('Y') }}
+                Almusanada © {{ date('Y') }}
             </div>
         </div>
     </div>

@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة الاستعلامات - المُساندة</title>
+    <title>Inquiry Dashboard - Almusanada</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { font-family: 'Cairo', sans-serif; }
+        * { font-family: 'Inter', sans-serif; }
         body { background: #f1f5f9; position: relative; overflow-x: hidden; }
 
         .orb { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.4; animation: float 20s infinite ease-in-out; pointer-events: none; z-index: 0; }
@@ -82,16 +82,16 @@
     <header class="premium-header relative z-10">
         <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between relative z-10">
             <div class="flex items-center gap-4">
-                <img src="{{ asset('images/logo.png') }}" alt="المُساندة" class="h-10 w-auto object-contain" style="filter: brightness(0) invert(1);">
+                <img src="{{ asset('images/logo.png') }}" alt="Almusanada" class="h-10 w-auto object-contain" style="filter: brightness(0) invert(1);">
                 <div class="w-px h-8 bg-white/20"></div>
-                <h1 class="text-lg font-bold text-white">لوحة الاستعلامات</h1>
+                <h1 class="text-lg font-bold text-white">Inquiry Dashboard</h1>
             </div>
             <div class="flex items-center gap-4">
                 <span class="text-sm font-semibold text-white/70">{{ Auth::user()->name }}</span>
                 <form action="{{ route('query.logout') }}" method="POST" style="display:inline;">
                     @csrf
                     <button type="submit" class="btn-logout px-4 py-2 rounded-xl font-semibold text-sm">
-                        <i class="fas fa-sign-out-alt ml-1"></i> خروج
+                        <i class="fas fa-sign-out-alt ml-1"></i> Logout
                     </button>
                 </form>
             </div>
@@ -108,7 +108,7 @@
                     </div>
                     <div>
                         <p class="text-3xl font-extrabold text-slate-800">{{ $totalTransactions }}</p>
-                        <p class="text-sm text-slate-500 font-semibold">إجمالي المعاملات</p>
+                        <p class="text-sm text-slate-500 font-semibold">Total Transactions</p>
                     </div>
                 </div>
             </div>
@@ -119,7 +119,7 @@
                     </div>
                     <div>
                         <p class="text-3xl font-extrabold text-slate-800">{{ $totalCustomers }}</p>
-                        <p class="text-sm text-slate-500 font-semibold">العملاء</p>
+                        <p class="text-sm text-slate-500 font-semibold">Customers</p>
                     </div>
                 </div>
             </div>
@@ -130,7 +130,7 @@
                     </div>
                     <div>
                         <p class="text-3xl font-extrabold text-slate-800">{{ $statusStats['Pending'] }}</p>
-                        <p class="text-sm text-slate-500 font-semibold">قيد الانتظار</p>
+                        <p class="text-sm text-slate-500 font-semibold">Pending</p>
                     </div>
                 </div>
             </div>
@@ -141,7 +141,7 @@
                     </div>
                     <div>
                         <p class="text-3xl font-extrabold text-slate-800">{{ $statusStats['Completed'] }}</p>
-                        <p class="text-sm text-slate-500 font-semibold">مكتملة</p>
+                        <p class="text-sm text-slate-500 font-semibold">Completed</p>
                     </div>
                 </div>
             </div>
@@ -150,20 +150,20 @@
         <!-- Recent Transactions -->
         <div class="table-card">
             <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-                <h2 class="text-lg font-bold text-slate-800">أحدث المعاملات</h2>
+                <h2 class="text-lg font-bold text-slate-800">Recent Transactions</h2>
                 <a href="{{ route('query.transactions.index') }}" class="text-sm font-semibold text-blue-600 hover:text-blue-700 transition">
-                    عرض الكل <i class="fas fa-arrow-left text-xs"></i>
+                    View All <i class="fas fa-arrow-left text-xs"></i>
                 </a>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full">
                     <thead>
-                        <tr class="bg-slate-50 text-right">
-                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">رقم المعاملة</th>
-                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">العميل</th>
-                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">المالك</th>
-                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">الحالة</th>
-                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">التاريخ</th>
+                        <tr class="bg-slate-50 text-left">
+                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Transaction #</th>
+                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Customer</th>
+                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Owner</th>
+                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Status</th>
+                            <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Date</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
@@ -179,7 +179,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-12 text-center text-slate-400">لا توجد معاملات</td>
+                                <td colspan="5" class="px-6 py-12 text-center text-slate-400">No transactions</td>
                             </tr>
                         @endforelse
                     </tbody>
