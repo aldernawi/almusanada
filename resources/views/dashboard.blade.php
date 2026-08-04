@@ -204,7 +204,7 @@
                                         </td>
                                         <td class="py-2.5 px-3 text-left">
                                             @if(auth()->user()->canViewAuditing())
-                                                <a href="{{ route('medical-auditing.index', ['form_id' => $sub->form->id]) }}" class="text-blue-600 hover:text-blue-700 text-xs font-bold">
+                                                <a href="{{ route('reviewer.forms.submissions', ['form' => $sub->form]) }}" class="text-blue-600 hover:text-blue-700 text-xs font-bold">
                                                     {{ auth()->user()->isViewer() ? 'View' : 'Review' }}
                                                 </a>
                                             @else

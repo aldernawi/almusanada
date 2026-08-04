@@ -24,34 +24,15 @@ class MedicalAuditingController extends Controller
 
         if ($request->filled('form_id')) {
             $formId = $request->integer('form_id');
-            $form = Form::findOrFail($formId);
+            $form = Form::with('fields')->findOrFail($formId);
             $this->authorizeSubmission(FormSubmission::make()->setAttribute('form_id', $formId));
 
-            $query = FormSubmission::query()
-                ->with(['form:id,title', 'reviewer:id,name', 'submissionData' => function ($q) {
-                    $q->whereHas('field', fn ($f) => $f->where('field_type', 'file'))
-                      ->whereNotNull('file_data');
-                }])
-                ->where('form_id', $formId)
-                ->latest('submitted_at');
+            $query = $this->submissionsQuery($formIds)->where('form_id', $formId);
 
-            if ($request->filled('status')) {
-                $query->where('status', $request->string('status'));
-            }
-
-            if ($request->filled('search')) {
-                $this->applySearch($query, trim($request->string('search')));
-            }
-
-            if ($request->filled('date_from')) {
-                $query->whereDate('submitted_at', '>=', $request->date('date_from'));
-            }
-
-            if ($request->filled('date_to')) {
-                $query->whereDate('submitted_at', '<=', $request->date('date_to'));
-            }
+            $this->applyFilters($query, $request, 'search');
 
             $submissions = $query->paginate(30)->withQueryString();
+            $fields = $form->fields;
 
             $counts = [
                 'total' => FormSubmission::where('form_id', $formId)->count(),
@@ -60,7 +41,7 @@ class MedicalAuditingController extends Controller
                 'rejected' => FormSubmission::where('form_id', $formId)->where('status', 'rejected')->count(),
             ];
 
-            return view('medical-auditing.index', compact('submissions', 'form', 'counts'));
+            return view('medical-auditing.index', compact('submissions', 'form', 'counts', 'fields'));
         }
 
         $forms = Form::query()
@@ -77,6 +58,13 @@ class MedicalAuditingController extends Controller
         return view('medical-auditing.index', compact('forms'));
     }
 
+    public function formSubmissions(Request $request, Form $form, ?FormSubmission $submission = null)
+    {
+        $request->merge(['form_id' => $form->id]);
+
+        return $this->index($request);
+    }
+
     public function search(Request $request)
     {
         $user = Auth::user();
@@ -84,33 +72,17 @@ class MedicalAuditingController extends Controller
 
         $formIds = $this->accessibleFormIds($user);
 
-        $query = FormSubmission::query()
-            ->with(['form:id,title', 'reviewer:id,name', 'submissionData' => function ($q) {
-                $q->whereHas('field', fn ($f) => $f->where('field_type', 'file'))
-                  ->whereNotNull('file_data');
-            }])
-            ->whereIn('form_id', $formIds)
-            ->latest('submitted_at');
+        $query = $this->submissionsQuery($formIds);
+        $fields = collect();
 
         if ($request->filled('form_id')) {
-            $query->where('form_id', $request->integer('form_id'));
+            $form = Form::with('fields')->findOrFail($request->integer('form_id'));
+            $this->authorizeSubmission(FormSubmission::make()->setAttribute('form_id', $form->id));
+            $query->where('form_id', $form->id);
+            $fields = $form->fields;
         }
 
-        if ($request->filled('status')) {
-            $query->where('status', $request->string('status'));
-        }
-
-        if ($request->filled('q')) {
-            $this->applySearch($query, trim($request->string('q')));
-        }
-
-        if ($request->filled('date_from')) {
-            $query->whereDate('submitted_at', '>=', $request->date('date_from'));
-        }
-
-        if ($request->filled('date_to')) {
-            $query->whereDate('submitted_at', '<=', $request->date('date_to'));
-        }
+        $this->applyFilters($query, $request, 'q');
 
         $submissions = $query->paginate(30)->withQueryString();
 
@@ -118,7 +90,8 @@ class MedicalAuditingController extends Controller
 
         return response()->json([
             'success' => true,
-            'html' => view('medical-auditing.partials.submissions-table', compact('submissions', 'statusLabels'))->render(),
+            'html' => view('medical-auditing.partials.submissions-table', compact('submissions', 'statusLabels', 'fields'))->render(),
+            'pagination' => (string) $submissions->links(),
         ]);
     }
 
@@ -211,14 +184,15 @@ class MedicalAuditingController extends Controller
             abort(404);
         }
 
-        [$disk, $path] = $this->attachmentDiskAndPath($data);
+        $fileData = $this->attachmentPayload($data);
+        [$disk, $path] = $this->attachmentDiskAndPath($data, $fileData);
         if (!$path || !Storage::disk($disk)->exists($path)) {
             abort(404, 'File not found');
         }
 
         return Storage::disk($disk)->download(
             $path,
-            $data->file_data['name'] ?? basename($path)
+            $fileData['name'] ?? basename($path)
         );
     }
 
@@ -230,18 +204,19 @@ class MedicalAuditingController extends Controller
             abort(404);
         }
 
-        [$disk, $path] = $this->attachmentDiskAndPath($data);
+        $fileData = $this->attachmentPayload($data);
+        [$disk, $path] = $this->attachmentDiskAndPath($data, $fileData);
         if (!$path || !Storage::disk($disk)->exists($path)) {
             abort(404, 'File not found');
         }
 
-        $mimeType = $data->file_data['mime_type']
-            ?? $data->file_data['type']
+        $mimeType = $fileData['mime_type']
+            ?? $fileData['type']
             ?? Storage::disk($disk)->mimeType($path);
 
         return response(Storage::disk($disk)->get($path), 200, [
             'Content-Type' => $mimeType,
-            'Content-Disposition' => 'inline; filename="' . ($data->file_data['name'] ?? basename($path)) . '"',
+            'Content-Disposition' => 'inline; filename="' . ($fileData['name'] ?? basename($path)) . '"',
         ]);
     }
 
@@ -368,16 +343,60 @@ class MedicalAuditingController extends Controller
         }
     }
 
-    private function attachmentDiskAndPath(SubmissionData $data): array
+    private function attachmentPayload(SubmissionData $data): array
     {
-        $path = $data->file_data['path'] ?? $data->value;
-        $disk = $data->file_data['disk'] ?? 'local';
+        $fileData = $data->file_data;
 
-        if ($path && !isset($data->file_data['disk']) && Storage::disk('public')->exists($path)) {
+        if (is_array($fileData) && array_is_list($fileData)) {
+            $fileData = $fileData[request()->integer('file', 0)] ?? null;
+        }
+
+        return is_array($fileData) ? $fileData : [];
+    }
+
+    private function attachmentDiskAndPath(SubmissionData $data, array $fileData): array
+    {
+        $path = $fileData['path'] ?? $data->value;
+        $disk = $fileData['disk'] ?? 'local';
+
+        if ($path && !isset($fileData['disk']) && Storage::disk('public')->exists($path)) {
             $disk = 'public';
         }
 
         return [$disk, $path];
+    }
+
+    private function submissionsQuery($formIds): Builder
+    {
+        return FormSubmission::query()
+            ->with([
+                'form:id,title',
+                'reviewer:id,name',
+                'submissionData:id,submission_id,field_id,value,file_data',
+                'submissionData.field:id,label,field_type,order',
+            ])
+            ->whereIn('form_id', $formIds)
+            ->latest('submitted_at')
+            ->latest('id');
+    }
+
+    private function applyFilters(Builder $query, Request $request, string $searchKey): void
+    {
+        if ($request->filled('status')) {
+            $query->where('status', $request->string('status'));
+        }
+
+        if ($request->filled($searchKey)) {
+            $this->applySearch($query, trim($request->string($searchKey)));
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('submitted_at', '>=', $request->date('date_from'));
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('submitted_at', '<=', $request->date('date_to'));
+        }
     }
 
     /**

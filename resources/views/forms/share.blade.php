@@ -27,7 +27,10 @@
                     </div>
                 </div>
                 <div class="bg-gray-50 p-3 rounded-xl mb-3 border border-gray-100">
-                    <code class="text-sm break-all" id="direct-link">{{ url('/f/' . $form->slug) }}</code>
+                    <div class="flex items-center gap-3">
+                        <img src="{{ asset('images/logo.png') }}" alt="Almusanada Insurance" class="h-8 w-auto object-contain flex-shrink-0">
+                        <code class="text-sm break-all" id="direct-link">{{ url('/f/' . $form->slug) }}</code>
+                    </div>
                 </div>
                 <button onclick="copyToClipboard('direct-link')" class="w-full bg-gradient-to-l from-teal-600 to-cyan-600 text-white px-4 py-2.5 rounded-xl hover:shadow-lg transition font-bold text-sm flex items-center justify-center gap-2">
                     <i class="fas fa-copy"></i> Copy Link
@@ -46,7 +49,14 @@
                     </div>
                 </div>
                 <div class="flex justify-center mb-3">
-                    <div id="qrcode" class="p-4 bg-white border-2 border-gray-100 rounded-xl"></div>
+                    <div id="qrcode-wrap" class="relative p-4 bg-white border-2 border-gray-100 rounded-xl">
+                        <div id="qrcode"></div>
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <span class="bg-white rounded-lg border border-gray-100 p-1.5 shadow-sm">
+                                <img src="{{ asset('images/logo.png') }}" alt="Almusanada Insurance" class="h-8 w-auto object-contain">
+                            </span>
+                        </div>
+                    </div>
                 </div>
                 <button onclick="downloadQR()" class="w-full bg-gradient-to-l from-green-600 to-emerald-600 text-white px-4 py-2.5 rounded-xl hover:shadow-lg transition font-bold text-sm flex items-center justify-center gap-2">
                     <i class="fas fa-download"></i> Download QR Code
@@ -116,9 +126,28 @@
         function downloadQR() {
             const canvas = document.querySelector('#qrcode canvas');
             if (canvas) {
+                const logo = document.querySelector('#qrcode-wrap img');
+                const output = document.createElement('canvas');
+                output.width = canvas.width;
+                output.height = canvas.height;
+                const ctx = output.getContext('2d');
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, output.width, output.height);
+                ctx.drawImage(canvas, 0, 0);
+
+                if (logo && logo.complete) {
+                    const logoWidth = Math.round(output.width * 0.28);
+                    const logoHeight = Math.round(logoWidth * (logo.naturalHeight / logo.naturalWidth));
+                    const x = Math.round((output.width - logoWidth) / 2);
+                    const y = Math.round((output.height - logoHeight) / 2);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(x - 8, y - 8, logoWidth + 16, logoHeight + 16);
+                    ctx.drawImage(logo, x, y, logoWidth, logoHeight);
+                }
+
                 const link = document.createElement('a');
                 link.download = 'form-qr-code.png';
-                link.href = canvas.toDataURL();
+                link.href = output.toDataURL();
                 link.click();
             }
         }

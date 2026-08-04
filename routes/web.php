@@ -190,6 +190,9 @@ Route::get('/forms/{form}/submissions/export/{format}', [FormSubmissionControlle
     Route::post('/reviewer/forms/{form}/assign', [ReviewerController::class, 'assignReviewers'])->name('reviewer.assign');
     });
 
+    Route::get('/reviewer/forms/{form}/submissions/{submission?}', [MedicalAuditingController::class, 'formSubmissions'])
+        ->name('reviewer.forms.submissions');
+
     // Medical Auditing Routes
     Route::prefix('medical-auditing')->group(function () {
         Route::get('/', [MedicalAuditingController::class, 'index'])->name('medical-auditing.index');

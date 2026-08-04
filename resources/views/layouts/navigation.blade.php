@@ -13,7 +13,7 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-1 sm:-my-px sm:ms-8 sm:flex items-center">
                     @if(auth()->user()->isReviewer() || auth()->user()->isViewer())
-                        <a href="{{ route('medical-auditing.index') }}" class="nav-link-modern {{ request()->routeIs('medical-auditing.*') ? 'nav-active' : '' }}">
+                        <a href="{{ route('medical-auditing.index') }}" class="nav-link-modern {{ request()->routeIs('medical-auditing.*') || request()->routeIs('reviewer.forms.submissions') ? 'nav-active' : '' }}">
                             <i class="fas fa-clipboard-check text-sm"></i>
                             <span>Auditing</span>
                         </a>
@@ -26,7 +26,7 @@
                             <i class="fas fa-file-medical text-sm"></i>
                             <span>Forms</span>
                         </a>
-                        <a href="{{ route('medical-auditing.index') }}" class="nav-link-modern {{ request()->routeIs('medical-auditing.*') ? 'nav-active' : '' }}">
+                        <a href="{{ route('medical-auditing.index') }}" class="nav-link-modern {{ request()->routeIs('medical-auditing.*') || request()->routeIs('reviewer.forms.submissions') ? 'nav-active' : '' }}">
                             <i class="fas fa-clipboard-check text-sm"></i>
                             <span>Auditing</span>
                         </a>
@@ -39,7 +39,7 @@
                             <span>Users</span>
                         </a>
                         @if(auth()->user()->isAdmin())
-                        <a href="{{ route('admin.dashboard') }}" class="nav-link-modern" target="_blank">
+                        <a href="{{ route('home') }}" class="nav-link-modern" target="_blank">
                             <i class="fas fa-globe text-sm"></i>
                             <span>Website</span>
                         </a>
@@ -117,7 +117,7 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden border-t border-gray-100">
         <div class="pt-3 pb-4 space-y-1 px-4">
             @if(auth()->user()->isReviewer() || auth()->user()->isViewer())
-                <a href="{{ route('medical-auditing.index') }}" class="responsive-nav-link-modern {{ request()->routeIs('medical-auditing.*') ? 'bg-primary-50 text-primary-600' : 'text-gray-700' }}">
+                <a href="{{ route('medical-auditing.index') }}" class="responsive-nav-link-modern {{ request()->routeIs('medical-auditing.*') || request()->routeIs('reviewer.forms.submissions') ? 'bg-primary-50 text-primary-600' : 'text-gray-700' }}">
                     <i class="fas fa-clipboard-check w-5"></i> Auditing
                 </a>
             @else
@@ -127,7 +127,7 @@
                 <a href="{{ route('forms.index') }}" class="responsive-nav-link-modern {{ request()->routeIs('forms.*') ? 'bg-primary-50 text-primary-600' : 'text-gray-700' }}">
                     <i class="fas fa-file-medical w-5"></i> Forms
                 </a>
-                <a href="{{ route('medical-auditing.index') }}" class="responsive-nav-link-modern {{ request()->routeIs('medical-auditing.*') ? 'bg-primary-50 text-primary-600' : 'text-gray-700' }}">
+                <a href="{{ route('medical-auditing.index') }}" class="responsive-nav-link-modern {{ request()->routeIs('medical-auditing.*') || request()->routeIs('reviewer.forms.submissions') ? 'bg-primary-50 text-primary-600' : 'text-gray-700' }}">
                     <i class="fas fa-clipboard-check w-5"></i> Auditing
                 </a>
                 <a href="{{ route('reviewer.assignment') }}" class="responsive-nav-link-modern {{ request()->routeIs('reviewer.assignment') ? 'bg-primary-50 text-primary-600' : 'text-gray-700' }}">

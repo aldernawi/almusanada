@@ -12,15 +12,23 @@ class DashboardController extends Controller
     public function index()
     {
         $user = auth()->user();
+        $formIds = $user->forms()->pluck('id');
         
         // Load folders
-        $folders = $user->folders()->withCount('forms')->get();
+        $folders = $user->folders()
+            ->withCount('forms')
+            ->with(['forms' => function ($query) {
+                $query->withCount('submissions')
+                    ->with(['folders:id,name,color', 'fields:id,form_id'])
+                    ->latest();
+            }])
+            ->get();
 
         // 1. All Active Forms (Not archived, not trashed)
         $allForms = $user->forms()
             ->whereNull('archived_at')
             ->withCount('submissions')
-            ->with('folders')
+            ->with(['folders:id,name,color', 'fields:id,form_id'])
             ->latest()
             ->get();
 
@@ -29,6 +37,7 @@ class DashboardController extends Controller
             ->where('is_favorite', true)
             ->whereNull('archived_at')
             ->withCount('submissions')
+            ->with(['folders:id,name,color', 'fields:id,form_id'])
             ->latest()
             ->get();
 
@@ -36,6 +45,7 @@ class DashboardController extends Controller
         $archivedForms = $user->forms()
             ->whereNotNull('archived_at')
             ->withCount('submissions')
+            ->with(['folders:id,name,color', 'fields:id,form_id'])
             ->latest()
             ->get();
 
@@ -43,26 +53,27 @@ class DashboardController extends Controller
         $trashedForms = $user->forms()
             ->onlyTrashed()
             ->withCount('submissions')
+            ->with(['folders:id,name,color', 'fields:id,form_id'])
             ->latest()
             ->get();
 
         $totalForms = $user->forms()->count();
         $activeForms = $user->forms()->where('status', 'active')->count();
-        $totalSubmissions = FormSubmission::whereIn('form_id', $user->forms()->pluck('id'))->count();
+        $totalSubmissions = FormSubmission::whereIn('form_id', $formIds)->count();
 
         // Recent submissions for quick access
-        $recentSubmissions = FormSubmission::whereIn('form_id', $user->forms()->pluck('id'))
+        $recentSubmissions = FormSubmission::whereIn('form_id', $formIds)
             ->with(['form:id,title', 'user:id,name'])
-            ->latest()
+            ->latest('submitted_at')
             ->take(8)
             ->get();
 
-        $pendingSubmissionsCount = FormSubmission::whereIn('form_id', $user->forms()->pluck('id'))
+        $pendingSubmissionsCount = FormSubmission::whereIn('form_id', $formIds)
             ->where('status', 'pending')
             ->count();
 
         // Chart data - submissions by day for last 7 days
-        $submissionsByDay = FormSubmission::whereIn('form_id', $user->forms()->pluck('id'))
+        $submissionsByDay = FormSubmission::whereIn('form_id', $formIds)
             ->where('submitted_at', '>=', now()->subDays(7))
             ->select(DB::raw('DATE(submitted_at) as date'), DB::raw('COUNT(*) as count'))
             ->groupBy('date')
@@ -70,7 +81,7 @@ class DashboardController extends Controller
             ->get();
 
         // Chart data - submissions by form
-        $submissionsByForm = FormSubmission::whereIn('form_id', $user->forms()->pluck('id'))
+        $submissionsByForm = FormSubmission::whereIn('form_id', $formIds)
             ->select('form_id', DB::raw('COUNT(*) as count'))
             ->groupBy('form_id')
             ->with('form:id,title')

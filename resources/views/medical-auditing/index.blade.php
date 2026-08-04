@@ -54,7 +54,7 @@
                 <div class="flex flex-col md:flex-row gap-3">
                     <div class="relative flex-1">
                         <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                        <input type="text" id="globalSearch" placeholder="Search by ID, status, notes, field values, reviewer..." 
+                        <input type="text" id="globalSearch" placeholder="Search by status, notes, field values, reviewer..."
                             class="w-full text-sm border-slate-200 rounded-xl pl-11 pr-4 py-2.5 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition"
                             value="{{ request('search') }}">
                         <input type="hidden" id="searchFormId" value="{{ $form->id }}">
@@ -76,12 +76,14 @@
                     <table class="min-w-full divide-y divide-slate-100">
                         <thead class="bg-slate-50">
                             <tr>
-                                <th class="px-5 py-4 text-left text-xs font-bold text-slate-500">Submission</th>
+                                <th class="px-5 py-4 text-left text-xs font-bold text-slate-500">#</th>
                                 <th class="px-5 py-4 text-left text-xs font-bold text-slate-500">Submitted At</th>
+                                @foreach($fields as $field)
+                                    <th class="px-5 py-4 text-left text-xs font-bold text-slate-500 whitespace-nowrap">{{ $field->label }}</th>
+                                @endforeach
                                 <th class="px-5 py-4 text-left text-xs font-bold text-slate-500">Status</th>
                                 <th class="px-5 py-4 text-center text-xs font-bold text-slate-500">Approve</th>
                                 <th class="px-5 py-4 text-center text-xs font-bold text-slate-500">Reject</th>
-                                <th class="px-5 py-4 text-center text-xs font-bold text-slate-500">View</th>
                                 <th class="px-5 py-4 text-center text-xs font-bold text-slate-500">Attachments</th>
                                 <th class="px-5 py-4 text-left text-xs font-bold text-slate-500">Notes</th>
                             </tr>
@@ -138,7 +140,7 @@
                                                 <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0">
                                                     <i class="fas fa-file-medical"></i>
                                                 </div>
-                                                <a href="{{ route('medical-auditing.index', ['form_id' => $form->id]) }}" class="font-extrabold text-slate-800 hover:text-blue-600 transition-colors">{{ $form->title }}</a>
+                                                <a href="{{ route('reviewer.forms.submissions', ['form' => $form]) }}" class="font-extrabold text-slate-800 hover:text-blue-600 transition-colors">{{ $form->title }}</a>
                                             </div>
                                         </td>
                                         <td class="px-5 py-4 text-sm text-slate-400 max-w-xs truncate">{{ $form->description ?? 'No description' }}</td>
@@ -167,7 +169,7 @@
                                             @endif
                                         </td>
                                         <td class="px-5 py-4 text-center">
-                                            <a href="{{ route('medical-auditing.index', ['form_id' => $form->id]) }}" class="inline-flex items-center gap-1.5 text-blue-600 text-sm font-bold hover:underline">
+                                            <a href="{{ route('reviewer.forms.submissions', ['form' => $form]) }}" class="inline-flex items-center gap-1.5 text-blue-600 text-sm font-bold hover:underline">
                                                 <span>View</span>
                                                 <i class="fas fa-arrow-right text-xs"></i>
                                             </a>
@@ -217,7 +219,7 @@
                     <button type="button" onclick="closeApprove()" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 text-xl transition">&times;</button>
                 </div>
                 <div class="p-6">
-                    <p class="text-sm text-slate-500 mb-3">Submission #<span id="approveSubmissionId"></span></p>
+                    <p class="text-sm text-slate-500 mb-3">Selected submission</p>
                     <p class="text-sm text-slate-600 mb-4">Are you sure this submission is approved?</p>
                     <div id="approveError" class="hidden text-red-600 text-sm font-bold mt-2"></div>
                     <button type="button" onclick="submitApprove()" class="w-full mt-4 bg-emerald-600 text-white py-3 rounded-xl font-bold hover:bg-emerald-700 transition-colors">Confirm Approval</button>
@@ -235,7 +237,7 @@
                     <button type="button" onclick="closeReject()" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 text-xl transition">&times;</button>
                 </div>
                 <div class="p-6">
-                    <p class="text-sm text-slate-500 mb-3">Submission #<span id="rejectSubmissionId"></span></p>
+                    <p class="text-sm text-slate-500 mb-3">Selected submission</p>
                     <p class="text-sm text-slate-600 mb-4">Are you sure this submission is rejected?</p>
                     <div id="rejectError" class="hidden text-red-600 text-sm font-bold mt-2"></div>
                     <button type="button" onclick="submitReject()" class="w-full mt-4 bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition-colors">Confirm Rejection</button>
@@ -268,6 +270,7 @@
         const auditUrlTemplate = @json(route('medical-auditing.audit', ['submission' => '__ID__']));
         const notesUrlTemplate = @json(route('medical-auditing.notes', ['submission' => '__ID__']));
         const csrfToken = @json(csrf_token());
+        const tableColumnCount = @json(7 + $fields->count());
 
         function escapeHtml(value) {
             const element = document.createElement('div');
@@ -303,7 +306,6 @@
             const badge = document.getElementById(`status-${id}`);
             const approveCell = document.getElementById(`approve-btn-${id}`)?.closest('td');
             const rejectCell = document.getElementById(`reject-btn-${id}`)?.closest('td');
-            const notesCell = approveCell?.nextElementSibling?.nextElementSibling;
 
             if (status === 'approved') {
                 badge.textContent = 'Approved';
@@ -320,7 +322,6 @@
 
         function openApprove(id) {
             activeSubmissionId = id;
-            document.getElementById('approveSubmissionId').textContent = id;
             document.getElementById('approveError').classList.add('hidden');
             document.getElementById('approveModal').classList.remove('hidden');
             document.body.classList.add('overflow-hidden');
@@ -354,7 +355,6 @@
 
         function openReject(id) {
             activeSubmissionId = id;
-            document.getElementById('rejectSubmissionId').textContent = id;
             document.getElementById('rejectError').classList.add('hidden');
             document.getElementById('rejectModal').classList.remove('hidden');
             document.body.classList.add('overflow-hidden');
@@ -412,7 +412,7 @@
                 if (!response.ok) throw new Error('Failed to load submission');
                 const payload = await response.json();
                 const submission = payload.data;
-                document.getElementById('modalTitle').textContent = `Submission #${submission.id} - ${submission.form_title}`;
+                document.getElementById('modalTitle').textContent = `${submission.form_title} submission details`;
                 document.getElementById('modalMeta').textContent = `Submitted at: ${submission.submitted_at ?? '-'}`;
                 document.getElementById('fieldsContainer').innerHTML = submission.fields.map(field => {
                     let content;
@@ -496,7 +496,7 @@
             if (dateFrom) params.set('date_from', dateFrom);
             if (dateTo) params.set('date_to', dateTo);
 
-            submissionsBody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-slate-400"><i class="fas fa-spinner fa-spin mr-2"></i>Searching...</td></tr>';
+            submissionsBody.innerHTML = `<tr><td colspan="${tableColumnCount}" class="px-6 py-8 text-center text-slate-400"><i class="fas fa-spinner fa-spin mr-2"></i>Searching...</td></tr>`;
 
             fetch(`${searchUrl}?${params.toString()}`, {
                 headers: { Accept: 'application/json' },
@@ -506,20 +506,13 @@
             .then(data => {
                 if (data.success) {
                     submissionsBody.innerHTML = data.html;
-                    // Update pagination if present in the partial
-                    const newPagination = submissionsBody.querySelector('[data-pagination]');
-                    if (newPagination) {
-                        paginationContainer.innerHTML = newPagination.innerHTML;
-                        newPagination.remove();
-                    } else {
-                        paginationContainer.innerHTML = '';
-                    }
+                    paginationContainer.innerHTML = data.pagination || '';
                 }
             })
             .catch(error => {
                 // Ignore abort errors - they happen when a newer request superseded this one
                 if (error.name === 'AbortError') return;
-                submissionsBody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-red-400">Error loading results.</td></tr>';
+                submissionsBody.innerHTML = `<tr><td colspan="${tableColumnCount}" class="px-6 py-8 text-center text-red-400">Error loading results.</td></tr>`;
             });
         }
 

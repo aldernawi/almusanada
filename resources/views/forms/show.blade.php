@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $form->title }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { font-family: 'Tajawal', sans-serif; }
+        * { font-family: 'Inter', sans-serif; }
         body {
             background: #080c14;
             min-height: 100vh;
@@ -53,7 +53,7 @@
         .form-header-bg::before {
             content: '';
             position: absolute;
-            top: -50%; right: -20%;
+            top: -50%; left: -20%;
             width: 300px; height: 300px;
             background: radial-gradient(circle, rgba(37, 99, 235, 0.25) 0%, transparent 70%);
             border-radius: 50%;
@@ -62,7 +62,7 @@
         .form-header-bg::after {
             content: '';
             position: absolute;
-            bottom: -30%; left: -10%;
+            bottom: -30%; right: -10%;
             width: 250px; height: 250px;
             background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
             border-radius: 50%;
@@ -187,7 +187,7 @@
             border: 1px solid #fca5a5;
         }
         .section-divider {
-            border-right: 4px solid #2563eb;
+            border-left: 4px solid #2563eb;
             background: linear-gradient(90deg, rgba(37, 99, 235, 0.05) 0%, transparent 100%);
         }
         .file-drop-zone {
@@ -240,7 +240,7 @@
             <div class="flex-1 progress-track">
                 <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
             </div>
-            <span class="progress-text whitespace-nowrap"><span id="progress-percent">0</span>% مكتمل</span>
+            <span class="progress-text whitespace-nowrap"><span id="progress-percent">0</span>% complete</span>
         </div>
     </div>
 
@@ -250,7 +250,7 @@
             <!-- Form Header with Logo -->
             <div class="form-header-bg px-8 py-10 text-white text-center relative z-10">
                 <div class="logo-wrapper mb-5">
-                    <img src="{{ asset('images/logo.png') }}" alt="المُساندة">
+                    <img src="{{ asset('images/logo.png') }}" alt="Almusanada Insurance">
                 </div>
                 <h1 class="text-3xl font-extrabold mb-2 tracking-tight">{{ $form->title }}</h1>
                 @if($form->description)
@@ -265,7 +265,7 @@
                             <i class="fas fa-check text-white text-lg"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-base">تم الإرسال بنجاح!</h3>
+                            <h3 class="font-bold text-base">Submitted successfully!</h3>
                             <p class="text-sm text-green-700">{{ session('success') }}</p>
                         </div>
                     </div>
@@ -277,7 +277,7 @@
                             <i class="fas fa-exclamation text-white text-lg"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-base">خطأ!</h3>
+                            <h3 class="font-bold text-base">Error!</h3>
                             <p class="text-sm text-red-700">{{ session('error') }}</p>
                         </div>
                     </div>
@@ -300,7 +300,7 @@
                                 <input type="text" 
                                        id="field_{{ $field->id }}" 
                                        name="fields[{{ $field->id }}][value]" 
-                                       placeholder="{{ $field->placeholder ?? 'أدخل النص هنا' }}"
+                                       placeholder="{{ $field->placeholder ?? 'Enter text here' }}"
                                        {{ $field->required ? 'required' : '' }}
                                        class="w-full px-4 py-3.5 field-input-base text-gray-800 placeholder-gray-400">
 
@@ -308,19 +308,19 @@
                                 <textarea id="field_{{ $field->id }}" 
                                           name="fields[{{ $field->id }}][value]" 
                                           rows="4"
-                                          placeholder="{{ $field->placeholder ?? 'أدخل النص هنا' }}"
+                                          placeholder="{{ $field->placeholder ?? 'Enter text here' }}"
                                           {{ $field->required ? 'required' : '' }}
                                           class="w-full px-4 py-3.5 field-input-base text-gray-800 placeholder-gray-400 resize-none"></textarea>
 
                             @elseif($field->field_type === 'email')
                                 <div class="relative">
-                                    <i class="fas fa-envelope absolute right-4 top-4 text-gray-400"></i>
+                                    <i class="fas fa-envelope absolute left-4 top-4 text-gray-400"></i>
                                     <input type="email" 
                                            id="field_{{ $field->id }}" 
                                            name="fields[{{ $field->id }}][value]" 
                                            placeholder="{{ $field->placeholder ?? 'example@email.com' }}"
                                            {{ $field->required ? 'required' : '' }}
-                                           class="w-full px-4 py-3.5 pr-12 field-input-base text-gray-800 placeholder-gray-400">
+                                           class="w-full px-4 py-3.5 pl-12 field-input-base text-gray-800 placeholder-gray-400">
                                 </div>
 
                             @elseif($field->field_type === 'number')
@@ -351,14 +351,14 @@
                                             name="fields[{{ $field->id }}][value]" 
                                             {{ $field->required ? 'required' : '' }}
                                             class="w-full px-4 py-3.5 field-input-base text-gray-800 appearance-none cursor-pointer">
-                                        <option value="">اختر من القائمة...</option>
+                                        <option value="">Select an option...</option>
                                         @if($field->options)
                                             @foreach($field->options as $option)
                                                 <option value="{{ $option }}">{{ $option }}</option>
                                             @endforeach
                                         @endif
                                     </select>
-                                    <i class="fas fa-chevron-down absolute left-4 top-4 text-gray-400"></i>
+                                    <i class="fas fa-chevron-down absolute right-4 top-4 text-gray-400"></i>
                                 </div>
 
                             @elseif($field->field_type === 'radio')
@@ -370,7 +370,7 @@
                                                        name="fields[{{ $field->id }}][value]" 
                                                        value="{{ $option }}"
                                                        {{ $field->required ? 'required' : '' }}
-                                                       class="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500 ml-3">
+                                                       class="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500 mr-3">
                                                 <span class="text-gray-700 font-medium">{{ $option }}</span>
                                             </label>
                                         @endforeach
@@ -385,7 +385,7 @@
                                                 <input type="checkbox" 
                                                        name="fields[{{ $field->id }}][value][]" 
                                                        value="{{ $option }}"
-                                                       class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 ml-3">
+                                                       class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 mr-3">
                                                 <span class="text-gray-700 font-medium">{{ $option }}</span>
                                             </label>
                                         @endforeach
@@ -402,34 +402,34 @@
                                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                            onchange="updateFileName(this, '{{ $field->id }}', true)">
                                     <i class="fas fa-cloud-upload-alt text-4xl text-blue-500 mb-3"></i>
-                                    <p class="text-gray-700 font-medium mb-1">اسحب الملفات هنا أو انقر للاختيار</p>
-                                    <p class="text-gray-400 text-sm" id="filename-{{ $field->id }}">لم يتم اختيار ملف</p>
+                                    <p class="text-gray-700 font-medium mb-1">Drag files here or click to browse</p>
+                                    <p class="text-gray-400 text-sm" id="filename-{{ $field->id }}">No file selected</p>
                                 </div>
 
                             @elseif($field->field_type === 'phone')
                                 <div class="relative">
-                                    <i class="fas fa-phone absolute right-4 top-4 text-gray-400"></i>
+                                    <i class="fas fa-phone absolute left-4 top-4 text-gray-400"></i>
                                     <input type="tel" 
                                            id="field_{{ $field->id }}" 
                                            name="fields[{{ $field->id }}][value]" 
                                            placeholder="{{ $field->placeholder ?? '05xxxxxxxx' }}"
                                            {{ $field->required ? 'required' : '' }}
-                                           class="w-full px-4 py-3.5 pr-12 field-input-base text-gray-800 placeholder-gray-400">
+                                           class="w-full px-4 py-3.5 pl-12 field-input-base text-gray-800 placeholder-gray-400">
                                 </div>
 
                             @elseif($field->field_type === 'url')
                                 <div class="relative">
-                                    <i class="fas fa-link absolute right-4 top-4 text-gray-400"></i>
+                                    <i class="fas fa-link absolute left-4 top-4 text-gray-400"></i>
                                     <input type="url" 
                                            id="field_{{ $field->id }}" 
                                            name="fields[{{ $field->id }}][value]" 
                                            placeholder="{{ $field->placeholder ?? 'https://example.com' }}"
                                            {{ $field->required ? 'required' : '' }}
-                                           class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none transition-all bg-white">
+                                           class="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg focus:outline-none transition-all bg-white">
                                 </div>
 
                             @elseif($field->field_type === 'section')
-                                <div class="section-divider pr-5 py-3 rounded-xl">
+                                <div class="section-divider pl-5 py-3 rounded-xl">
                                     <h3 class="text-xl font-extrabold text-gray-900">{{ $field->label }}</h3>
                                 </div>
 
@@ -437,7 +437,7 @@
                                 <input type="password" 
                                        id="field_{{ $field->id }}" 
                                        name="fields[{{ $field->id }}][value]" 
-                                       placeholder="{{ $field->placeholder ?? '••••••••' }}"
+                                       placeholder="{{ $field->placeholder ?? '********' }}"
                                        {{ $field->required ? 'required' : '' }}
                                        class="w-full px-4 py-3.5 field-input-base text-gray-800 placeholder-gray-400">
 
@@ -472,8 +472,8 @@
                                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                            onchange="updateFileName(this, '{{ $field->id }}', true)">
                                     <i class="fas fa-image text-4xl text-blue-500 mb-3"></i>
-                                    <p class="text-gray-700 font-medium mb-1">اسحب الصور هنا أو انقر للاختيار</p>
-                                    <p class="text-gray-400 text-sm" id="filename-{{ $field->id }}">لم يتم اختيار ملف</p>
+                                    <p class="text-gray-700 font-medium mb-1">Drag images here or click to browse</p>
+                                    <p class="text-gray-400 text-sm" id="filename-{{ $field->id }}">No file selected</p>
                                 </div>
 
                             @elseif($field->field_type === 'video')
@@ -487,13 +487,13 @@
                                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                            onchange="updateFileName(this, '{{ $field->id }}', true)">
                                     <i class="fas fa-video text-4xl text-blue-500 mb-3"></i>
-                                    <p class="text-gray-700 font-medium mb-1">اسحب الفيديوهات هنا أو انقر للاختيار</p>
-                                    <p class="text-gray-400 text-sm" id="filename-{{ $field->id }}">لم يتم اختيار ملف</p>
+                                    <p class="text-gray-700 font-medium mb-1">Drag videos here or click to browse</p>
+                                    <p class="text-gray-400 text-sm" id="filename-{{ $field->id }}">No file selected</p>
                                 </div>
 
                             @elseif($field->field_type === 'price')
                                 <div class="relative">
-                                    <i class="fas fa-dollar-sign absolute right-4 top-4 text-gray-400"></i>
+                                    <i class="fas fa-dollar-sign absolute left-4 top-4 text-gray-400"></i>
                                     <input type="number" 
                                            step="0.01" 
                                            min="0"
@@ -501,7 +501,7 @@
                                            name="fields[{{ $field->id }}][value]" 
                                            placeholder="{{ $field->placeholder ?? '0.00' }}"
                                            {{ $field->required ? 'required' : '' }}
-                                           class="w-full px-4 py-3.5 pr-12 field-input-base text-gray-800 placeholder-gray-400">
+                                           class="w-full px-4 py-3.5 pl-12 field-input-base text-gray-800 placeholder-gray-400">
                                 </div>
 
                             @elseif($field->field_type === 'html')
@@ -515,9 +515,9 @@
                                     <input type="hidden" name="fields[{{ $field->id }}][value]" id="signature-input-{{ $field->id }}">
                                     <div class="flex justify-between items-center px-4 py-2.5 border-t border-slate-100 bg-slate-50">
                                         <button type="button" onclick="clearSignature('{{ $field->id }}')" class="text-sm text-gray-500 hover:text-red-500 font-medium transition-colors">
-                                            <i class="fas fa-eraser ml-1"></i> مسح
+                                            <i class="fas fa-eraser ml-1"></i> Clear
                                         </button>
-                                        <span class="text-xs text-gray-400">وقّع بالماوس فوق المنطقة البيضاء</span>
+                                        <span class="text-xs text-gray-400">Sign inside the white area</span>
                                     </div>
                                 </div>
 
@@ -533,14 +533,14 @@
                     @empty
                         <div class="text-center py-8">
                             <i class="fas fa-exclamation-circle text-4xl text-yellow-500 mb-3"></i>
-                            <p class="text-gray-600">هذا النموذج لا يحتوي على حقول بعد.</p>
+                            <p class="text-gray-600">This form does not have fields yet.</p>
                         </div>
                     @endforelse
 
                     @php
                         $submitSettings = $form->settings ?? [];
                         $submitButton = $submitSettings['submit_button'] ?? [];
-                        $submitButtonLabel = $submitButton['label'] ?? $submitSettings['submit_button_label'] ?? 'إرسال النموذج';
+                        $submitButtonLabel = $submitButton['label'] ?? $submitSettings['submit_button_label'] ?? 'Submit Form';
                         $submitButtonColor = $submitButton['color'] ?? $submitSettings['submit_button_color'] ?? null;
                     @endphp
                     <div class="mt-8">
@@ -556,8 +556,8 @@
         <!-- Footer -->
         <div class="text-center py-6">
             <div class="footer-brand">
-                <img src="{{ asset('images/logo.png') }}" alt="المُساندة">
-                <span class="text-white/60 text-sm font-medium">شركة المُساندة للتأمين </span>
+                <img src="{{ asset('images/logo.png') }}" alt="Almusanada Insurance">
+                <span class="text-white/60 text-sm font-medium">Almusanada Insurance</span>
             </div>
         </div>
     </div>
@@ -593,7 +593,7 @@
             const filename = document.getElementById('filename-' + fieldId);
             if (input.files && input.files.length > 0) {
                 if (isMulti && input.files.length > 1) {
-                    filename.textContent = input.files.length + ' ملفات مختارة';
+                    filename.textContent = input.files.length + ' files selected';
                 } else {
                     filename.textContent = input.files[0].name;
                 }
