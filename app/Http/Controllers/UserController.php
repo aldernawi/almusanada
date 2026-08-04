@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Form;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -25,7 +26,9 @@ class UserController extends Controller
             abort(403, 'You are not authorized to access this page');
         }
 
-        return view('users.create');
+        $forms = Form::orderBy('title')->get(['id', 'title']);
+
+        return view('users.create', compact('forms'));
     }
 
     public function store(Request $request)
@@ -38,13 +41,15 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', Rules\Password::defaults()],
-            'role' => ['required', 'in:admin,reviewer,user'],
+            'role' => ['required', 'in:admin,reviewer,viewer,user'],
             'form_limit' => ['nullable', 'integer', 'min:1'],
             'submission_limit' => ['nullable', 'integer', 'min:1'],
             'upload_limit_mb' => ['nullable', 'integer', 'min:1'],
+            'form_ids' => ['array'],
+            'form_ids.*' => ['integer', 'exists:forms,id'],
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -53,6 +58,10 @@ class UserController extends Controller
             'submission_limit' => $request->submission_limit ?? 1000,
             'upload_limit_mb' => $request->upload_limit_mb ?? 100,
         ]);
+
+        if (in_array($user->role, ['reviewer', 'viewer'], true)) {
+            $user->assignedForms()->sync($request->input('form_ids', []));
+        }
 
         return redirect()->route('users.index')->with('success', 'User created successfully');
     }
@@ -63,7 +72,10 @@ class UserController extends Controller
             abort(403, 'You are not authorized to access this page');
         }
 
-        return view('users.edit', compact('user'));
+        $forms = Form::orderBy('title')->get(['id', 'title']);
+        $assignedFormIds = $user->assignedForms()->pluck('forms.id')->all();
+
+        return view('users.edit', compact('user', 'forms', 'assignedFormIds'));
     }
 
     public function update(Request $request, User $user)
@@ -75,10 +87,12 @@ class UserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
-            'role' => ['required', 'in:admin,reviewer,user'],
+            'role' => ['required', 'in:admin,reviewer,viewer,user'],
             'form_limit' => ['nullable', 'integer', 'min:1'],
             'submission_limit' => ['nullable', 'integer', 'min:1'],
             'upload_limit_mb' => ['nullable', 'integer', 'min:1'],
+            'form_ids' => ['array'],
+            'form_ids.*' => ['integer', 'exists:forms,id'],
         ]);
 
         $data = [
@@ -98,6 +112,12 @@ class UserController extends Controller
         }
 
         $user->update($data);
+
+        if (in_array($user->role, ['reviewer', 'viewer'], true)) {
+            $user->assignedForms()->sync($request->input('form_ids', []));
+        } else {
+            $user->assignedForms()->detach();
+        }
 
         return redirect()->route('users.index')->with('success', 'User updated successfully');
     }

@@ -6,6 +6,7 @@ use App\Events\MedicalAuditCompleted;
 use App\Models\Form;
 use App\Models\FormSubmission;
 use App\Models\SubmissionData;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,9 +20,7 @@ class MedicalAuditingController extends Controller
         $user = Auth::user();
         $this->ensureAuditor($user);
 
-        $formIds = $user->isAdmin()
-            ? Form::query()->pluck('id')
-            : $user->assignedForms()->pluck('forms.id');
+        $formIds = $this->accessibleFormIds($user);
 
         if ($request->filled('form_id')) {
             $formId = $request->integer('form_id');
@@ -83,9 +82,7 @@ class MedicalAuditingController extends Controller
         $user = Auth::user();
         $this->ensureAuditor($user);
 
-        $formIds = $user->isAdmin()
-            ? Form::query()->pluck('id')
-            : $user->assignedForms()->pluck('forms.id');
+        $formIds = $this->accessibleFormIds($user);
 
         $query = FormSubmission::query()
             ->with(['form:id,title', 'reviewer:id,name', 'submissionData' => function ($q) {
@@ -214,12 +211,12 @@ class MedicalAuditingController extends Controller
             abort(404);
         }
 
-        $path = $data->file_data['path'] ?? $data->value;
-        if (!$path || !Storage::disk('local')->exists($path)) {
+        [$disk, $path] = $this->attachmentDiskAndPath($data);
+        if (!$path || !Storage::disk($disk)->exists($path)) {
             abort(404, 'File not found');
         }
 
-        return Storage::disk('local')->download(
+        return Storage::disk($disk)->download(
             $path,
             $data->file_data['name'] ?? basename($path)
         );
@@ -233,14 +230,16 @@ class MedicalAuditingController extends Controller
             abort(404);
         }
 
-        $path = $data->file_data['path'] ?? $data->value;
-        if (!$path || !Storage::disk('local')->exists($path)) {
+        [$disk, $path] = $this->attachmentDiskAndPath($data);
+        if (!$path || !Storage::disk($disk)->exists($path)) {
             abort(404, 'File not found');
         }
 
-        $mimeType = $data->file_data['type'] ?? Storage::disk('local')->mimeType($path);
+        $mimeType = $data->file_data['mime_type']
+            ?? $data->file_data['type']
+            ?? Storage::disk($disk)->mimeType($path);
 
-        return response(Storage::disk('local')->get($path), 200, [
+        return response(Storage::disk($disk)->get($path), 200, [
             'Content-Type' => $mimeType,
             'Content-Disposition' => 'inline; filename="' . ($data->file_data['name'] ?? basename($path)) . '"',
         ]);
@@ -251,9 +250,7 @@ class MedicalAuditingController extends Controller
         $user = Auth::user();
         $this->ensureAuditor($user);
 
-        $formIds = $user->isAdmin()
-            ? Form::query()->pluck('id')
-            : $user->assignedForms()->pluck('forms.id');
+        $formIds = $this->accessibleFormIds($user);
 
         $query = FormSubmission::query()
             ->with(['form:id,title', 'reviewer:id,name', 'submissionData.field'])
@@ -347,9 +344,21 @@ class MedicalAuditingController extends Controller
         $user = Auth::user();
         $this->ensureAuditor($user);
 
-        if (!$user->isAdmin() && !$user->assignedForms()->whereKey($submission->form_id)->exists()) {
+        if (!$this->canSeeAllSubmissions($user) && !$user->assignedForms()->whereKey($submission->form_id)->exists()) {
             abort(403, 'This submission is not assigned to you');
         }
+    }
+
+    private function accessibleFormIds(User $user)
+    {
+        return $this->canSeeAllSubmissions($user)
+            ? Form::query()->pluck('id')
+            : $user->assignedForms()->pluck('forms.id');
+    }
+
+    private function canSeeAllSubmissions(User $user): bool
+    {
+        return $user->isAdmin() || ($user->isReviewer() && (bool) $user->can_view_all_transactions);
     }
 
     private function ensureNotViewer(): void
@@ -357,6 +366,18 @@ class MedicalAuditingController extends Controller
         if (Auth::user()->isViewer()) {
             abort(403, 'Viewers can only view submissions and cannot perform actions.');
         }
+    }
+
+    private function attachmentDiskAndPath(SubmissionData $data): array
+    {
+        $path = $data->file_data['path'] ?? $data->value;
+        $disk = $data->file_data['disk'] ?? 'local';
+
+        if ($path && !isset($data->file_data['disk']) && Storage::disk('public')->exists($path)) {
+            $disk = 'public';
+        }
+
+        return [$disk, $path];
     }
 
     /**

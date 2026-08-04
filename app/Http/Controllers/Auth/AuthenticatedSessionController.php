@@ -28,7 +28,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        if ($request->user()->isReviewer()) {
+        if ($request->user()->isReviewer() || $request->user()->isViewer()) {
             return redirect()->route('medical-auditing.index');
         }
 

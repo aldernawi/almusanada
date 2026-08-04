@@ -79,6 +79,23 @@
                             <p class="text-gray-500 text-xs mt-2 ml-6">If unchecked, the reviewer will only see their assigned transactions</p>
                         </div>
                     </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Assigned Forms</label>
+                        <div class="max-h-64 overflow-y-auto border border-gray-200 rounded-lg p-4 space-y-2 bg-gray-50">
+                            @forelse($forms as $form)
+                                <label class="flex items-center gap-3 text-sm text-gray-700">
+                                    <input type="checkbox" name="form_ids[]" value="{{ $form->id }}"
+                                        {{ in_array($form->id, old('form_ids', [])) ? 'checked' : '' }}
+                                        class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                    <span>{{ $form->title }}</span>
+                                </label>
+                            @empty
+                                <p class="text-sm text-gray-500">No forms available.</p>
+                            @endforelse
+                        </div>
+                        <p class="text-gray-500 text-xs mt-2">Select the forms this reviewer or viewer can access.</p>
+                    </div>
                 </div>
 
                 <div class="flex justify-end mt-8">

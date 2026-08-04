@@ -35,9 +35,27 @@
                             <select id="role" name="role" class="block mt-1 w-full border-gray-300 focus:border-teal-500 focus:ring-teal-500 rounded-md shadow-sm">
                                 <option value="user" {{ old('role') === 'user' ? 'selected' : '' }}>User</option>
                                 <option value="reviewer" {{ old('role') === 'reviewer' ? 'selected' : '' }}>Reviewer</option>
+                                <option value="viewer" {{ old('role') === 'viewer' ? 'selected' : '' }}>Viewer</option>
                                 <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>Admin</option>
                             </select>
                             <x-input-error :messages="$errors->get('role')" class="mt-2" />
+                        </div>
+
+                        <div id="assigned-forms-section" class="mb-4" style="display: none;">
+                            <x-input-label :value="__('Assigned Forms')" />
+                            <div class="mt-2 max-h-56 overflow-y-auto rounded-md border border-gray-200 bg-gray-50 p-3 space-y-2">
+                                @forelse($forms as $form)
+                                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                                        <input type="checkbox" name="form_ids[]" value="{{ $form->id }}"
+                                            {{ in_array($form->id, old('form_ids', [])) ? 'checked' : '' }}
+                                            class="rounded border-gray-300 text-teal-600 focus:ring-teal-500">
+                                        <span>{{ $form->title }}</span>
+                                    </label>
+                                @empty
+                                    <p class="text-sm text-gray-500">No forms available.</p>
+                                @endforelse
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Select forms this reviewer or viewer can access.</p>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -68,4 +86,16 @@
             </div>
         </div>
     </div>
+
+    <script>
+        const roleSelect = document.getElementById('role');
+        const assignedFormsSection = document.getElementById('assigned-forms-section');
+
+        function syncAssignedFormsVisibility() {
+            assignedFormsSection.style.display = ['reviewer', 'viewer'].includes(roleSelect.value) ? 'block' : 'none';
+        }
+
+        roleSelect.addEventListener('change', syncAssignedFormsVisibility);
+        syncAssignedFormsVisibility();
+    </script>
 </x-app-layout>

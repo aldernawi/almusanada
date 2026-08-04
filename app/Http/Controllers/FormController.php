@@ -63,7 +63,7 @@ class FormController extends Controller
     {
         Gate::authorize('update', $form);
 
-        $validated = $request->validate([
+        $rules = [
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'thank_you_message' => 'nullable|string',
@@ -71,9 +71,37 @@ class FormController extends Controller
             'require_login' => 'boolean',
             'enable_captcha' => 'boolean',
             'webhook_url' => 'nullable|url|max:2048',
-        ]);
+            'settings' => 'nullable|array',
+            'settings.submit_button' => 'nullable|array',
+            'settings.submit_button.label' => 'nullable|string|max:80',
+            'settings.submit_button.color' => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+        ];
+
+        if ($request->isJson()) {
+            $rules = collect($rules)
+                ->mapWithKeys(fn ($rule, $key) => [$key => 'sometimes|' . (is_array($rule) ? implode('|', $rule) : $rule)])
+                ->all();
+        }
+
+        $validated = $request->validate($rules);
+
+        if (array_key_exists('settings', $validated)) {
+            $validated['settings'] = array_replace_recursive($form->settings ?? [], $validated['settings'] ?? []);
+        }
+
+        if (!$request->isJson()) {
+            $validated['require_login'] = $request->boolean('require_login');
+            $validated['enable_captcha'] = $request->boolean('enable_captcha');
+        }
 
         $form->update($validated);
+
+        if ($request->wantsJson() || $request->isJson()) {
+            return response()->json([
+                'success' => true,
+                'form' => $form->fresh(),
+            ]);
+        }
 
         return redirect()->route('forms.edit', $form)->with('success', 'Form updated successfully');
     }

@@ -5,14 +5,14 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ auth()->user()->isReviewer() ? route('medical-auditing.index') : route('dashboard') }}" class="flex items-center gap-2.5 group">
+                    <a href="{{ auth()->user()->isReviewer() || auth()->user()->isViewer() ? route('medical-auditing.index') : route('dashboard') }}" class="flex items-center gap-2.5 group">
                         <img src="{{ asset('images/logo.png') }}" alt="Almusanada" class="h-10 w-auto object-contain transition-all duration-300 group-hover:scale-105 drop-shadow-sm">
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-1 sm:-my-px sm:ms-8 sm:flex items-center">
-                    @if(auth()->user()->isReviewer())
+                    @if(auth()->user()->isReviewer() || auth()->user()->isViewer())
                         <a href="{{ route('medical-auditing.index') }}" class="nav-link-modern {{ request()->routeIs('medical-auditing.*') ? 'nav-active' : '' }}">
                             <i class="fas fa-clipboard-check text-sm"></i>
                             <span>Auditing</span>
@@ -116,7 +116,7 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden border-t border-gray-100">
         <div class="pt-3 pb-4 space-y-1 px-4">
-            @if(auth()->user()->isReviewer())
+            @if(auth()->user()->isReviewer() || auth()->user()->isViewer())
                 <a href="{{ route('medical-auditing.index') }}" class="responsive-nav-link-modern {{ request()->routeIs('medical-auditing.*') ? 'bg-primary-50 text-primary-600' : 'text-gray-700' }}">
                     <i class="fas fa-clipboard-check w-5"></i> Auditing
                 </a>

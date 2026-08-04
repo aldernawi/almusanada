@@ -14,13 +14,17 @@ return new class extends Migration
             $table->boolean('can_view_all_transactions')->default(false)->after('can_view_transactions');
         });
 
-        // Update role enum to include customer and query_user
-        \DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('admin', 'reviewer', 'user', 'customer', 'query_user') DEFAULT 'user'");
+        // MySQL/MariaDB need the enum expanded; sqlite tests keep the existing string column.
+        if (Schema::getConnection()->getDriverName() === 'mysql') {
+            \DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('admin', 'reviewer', 'viewer', 'user', 'customer', 'query_user') DEFAULT 'user'");
+        }
     }
 
     public function down(): void
     {
-        \DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('admin', 'reviewer', 'user') DEFAULT 'user'");
+        if (Schema::getConnection()->getDriverName() === 'mysql') {
+            \DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('admin', 'reviewer', 'user') DEFAULT 'user'");
+        }
 
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn(['username', 'can_view_transactions', 'can_view_all_transactions']);

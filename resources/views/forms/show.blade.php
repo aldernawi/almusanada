@@ -537,10 +537,16 @@
                         </div>
                     @endforelse
 
+                    @php
+                        $submitSettings = $form->settings ?? [];
+                        $submitButton = $submitSettings['submit_button'] ?? [];
+                        $submitButtonLabel = $submitButton['label'] ?? $submitSettings['submit_button_label'] ?? 'إرسال النموذج';
+                        $submitButtonColor = $submitButton['color'] ?? $submitSettings['submit_button_color'] ?? null;
+                    @endphp
                     <div class="mt-8">
-                        <button type="submit" class="submit-btn w-full text-white px-8 py-4 rounded-2xl text-lg font-extrabold shadow-lg flex items-center justify-center gap-3">
+                        <button type="submit" class="submit-btn w-full text-white px-8 py-4 rounded-2xl text-lg font-extrabold shadow-lg flex items-center justify-center gap-3" @if($submitButtonColor) style="background: {{ $submitButtonColor }};" @endif>
                             <i class="fas fa-paper-plane"></i>
-                            إرسال النموذج
+                            {{ $submitButtonLabel }}
                         </button>
                     </div>
                 </form>

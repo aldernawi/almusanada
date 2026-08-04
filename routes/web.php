@@ -27,11 +27,13 @@ use App\Http\Controllers\Query\AuthController as QueryAuthController;
 use App\Http\Controllers\Query\DashboardController as QueryDashboardController;
 use App\Http\Controllers\Query\TransactionController as QueryTransactionController;
 use App\Http\Controllers\Reviewer\DashboardController as ReviewerDashboardController;
-use App\Models\CompanyProfile;
 use Illuminate\Support\Facades\Route;
 
-// Website Landing Page
+// Static Website Landing Page
 Route::get('/', function () {
+    return view('layouts.guest');
+
+    /*
     $profile = CompanyProfile::first();
     if (!$profile) {
         $profile = new CompanyProfile([
@@ -48,6 +50,7 @@ Route::get('/', function () {
     $employees = \App\Models\Employee::all();
 
     return view('landing', compact('profile', 'regulations', 'services', 'employees'));
+    */
 })->name('home');
 
 // Public Employee Pages

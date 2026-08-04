@@ -236,7 +236,7 @@
 
         .input-icon {
             position: absolute;
-            right: 1rem;
+            left: 1rem;
             top: 50%;
             transform: translateY(-50%);
             color: #cbd5e1;
@@ -248,7 +248,7 @@
 
         .form-input {
             width: 100%;
-            padding: 0.9rem 2.75rem 0.9rem 1.125rem;
+            padding: 0.9rem 2.75rem;
             border: 1.5px solid #e2e8f0;
             border-radius: 14px;
             font-family: 'Inter', sans-serif;
@@ -275,7 +275,7 @@
 
         .pwd-toggle {
             position: absolute;
-            left: 1rem;
+            right: 1rem;
             top: 50%;
             transform: translateY(-50%);
             color: #cbd5e1;
