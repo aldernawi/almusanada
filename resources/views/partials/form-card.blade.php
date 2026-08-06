@@ -72,11 +72,16 @@
                 </a>
 
                 <!-- More Options -->
-                <div class="relative" x-data="{ openOptions: false, dropdownPosition: { top: 0, left: 0 } }" @click.away="openOptions = false">
-                    <button @click="openOptions = !openOptions; if(openOptions) { const rect = $el.getBoundingClientRect(); dropdownPosition = { top: rect.bottom + 4, left: rect.left }; }" class="bg-slate-100 text-slate-600 hover:bg-slate-200 p-2 rounded-lg text-[11px] font-bold transition w-8 h-8 flex items-center justify-center">
+                <div class="relative" x-data="{ openOptions: false }" @click.away="openOptions = false">
+                    <button @click="openOptions = !openOptions" class="bg-slate-100 text-slate-600 hover:bg-slate-200 p-2 rounded-lg text-[11px] font-bold transition w-8 h-8 flex items-center justify-center">
                         <i class="fas fa-ellipsis-v"></i>
                     </button>
-                    <div x-show="openOptions" x-transition :style="{ top: dropdownPosition.top + 'px', left: dropdownPosition.left + 'px' }" class="fixed w-44 bg-white rounded-xl shadow-xl border border-slate-100 py-1 z-[9999]">
+
+                    <!-- Dropdown Menu -->
+                    <div x-show="openOptions" 
+                         x-transition 
+                         class="absolute ltr:right-0 rtl:left-0 bottom-full mb-2 w-44 bg-white rounded-xl shadow-xl border border-slate-100 py-1 z-[50]" 
+                         style="display: none;">
                         <button onclick="toggleFavorite({{ $form->id }}, this)" class="w-full flex items-center gap-2 px-3 py-2 text-[11px] font-bold text-slate-700 hover:bg-slate-50 text-right">
                             <i class="{{ $form->is_favorite ? 'fas fa-star text-amber-500' : 'far fa-star text-slate-400' }} w-4"></i>
                             {{ $form->is_favorite ? 'Remove from Favorites' : 'Add to Favorites' }}
